@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KF - Círculo da Performance</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: #333;
+        }
+        #logo {
+            width: 150px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        #login-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 400px;
+        }
+        #form-section {
+            display: none;
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 400px;
+        }
+        .question {
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+        #result-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            color: #333;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+            width: 90%;
+            max-width: 600px;
+        }
+        #result-modal h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 5;
+        }
+        .button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #FFD700;
+            color: black;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            width: 100%;
+            max-width: 200px;
+            transition: background 0.3s;
+        }
+        .button:hover {
+            background-color: #FFA500;
+        }
+        .question input {
+            width: 50px;
+            padding: 5px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<img src="lomk.png" alt="Logo KF" id="logo">
+<h1>KF - Círculo da Performance</h1>
+
+<div id="login-section">
+    <label for="name">Insira seu nome completo:</label>
+    <input type="text" id="name" required>
+    <button class="button" onclick="openForm()">Iniciar</button>
+</div>
+
+<div id="form-section">
+    <h2>Questionário de Avaliação</h2>
+    <div id="questions">
+        <!-- Perguntas serão geradas aqui -->
+    </div>
+    <button class="button" onclick="generateResults()">Ver Resultado</button>
+</div>
+
+<div id="overlay" onclick="closeModal()"></div>
+
+<div id="result-modal">
+    <h2>Resultado de <span id="userName"></span></h2>
+    <canvas id="resultChart" width="400" height="400"></canvas>
+    <p style="text-align:center; margin-top:20px;">
+        Análise do Gráfico: As áreas mais próximas do centro representam pontos a serem otimizados. Quanto mais fora do centro, melhor o desempenho no tópico específico.
+    </p>
+    <button class="button" onclick="downloadPDF()">Baixar em PDF</button>
+    <button class="button" onclick="closeModal()">Fechar</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
+<script>
+    const topics = [
+        "Sono", "Endurance", "Treinamento Força", "Forma física/peso",
+        "Etilismo/Tabagismo", "Espiritualidade", "Ansiedade", "Hidratação",
+        "Frutas/Verduras", "Industrializados/Gordura", "Energia/Vitalidade", "Tempo/Intensidade de treino"
+    ];
+
+    const scores = {};
+
+    function loadQuestions() {
+        const questionDiv = document.getElementById('questions');
+        topics.forEach(topic => {
+            const question = document.createElement('div');
+            question.className = 'question';
+            question.innerHTML = \`
+                <label>\${topic}:</label>
+                <input type="number" min="1" max="10" value="5" onchange="updateScore('\${topic}', this.value)">
+            \`;
+            questionDiv.appendChild(question);
+            scores[topic] = 5;
+        });
+    }
+
+    function openForm() {
+        const name = document.getElementById('name').value;
+        if (!name.trim()) {
+            alert("Por favor, insira o nome completo.");
+            return;
+        }
+        document.getElementById('form-section').style.display = 'block';
+        document.getElementById('login-section').style.display = 'none';
+    }
+
+    function updateScore(topic, value) {
+        scores[topic] = Number(value);
+    }
+
+    function generateResults() {
+        const name = document.getElementById('name').value;
+        document.getElementById('userName').textContent = name;
+        createRadarChart();
+        document.getElementById('overlay').style.display = 'block';
+        document.getElementById('result-modal').style.display = 'block';
+    }
+
+    function createRadarChart() {
+        const ctx = document.getElementById('resultChart').getContext('2d');
+        const data = {
+            labels: topics,
+            datasets: [{
+                label: 'Círculo da Performance',
+                data: Object.values(scores),
+                fill: true,
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                pointBackgroundColor: 'rgba(54, 162, 235, 1)',
+            }]
+        };
+        if (window.radarChart) window.radarChart.destroy(); // Para limpar gráfico anterior
+        window.radarChart = new Chart(ctx, {
+            type: 'radar',
+            data: data,
+            options: {
+                scales: {
+                    r: {
+                        min: 0,
+                        max: 10,
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    function closeModal() {
+        document.getElementById('overlay').style.display = 'none';
+        document.getElementById('result-modal').style.display = 'none';
+    }
+
+    function downloadPDF() {
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF();
+        pdf.text(\`Resultado de \${document.getElementById('userName').textContent}\`, 10, 10);
+        pdf.addImage(document.getElementById('resultChart').toDataURL(), 'PNG', 10, 20, 180, 160);
+        pdf.save('resultado_circulo_da_performance.pdf');
+    }
+
+    loadQuestions();
+</script>
+
+</body>
+</html>
