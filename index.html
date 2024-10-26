@@ -1,235 +1,331 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html>
 <head>
+    <base href="/" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Círculo da Performance</title>
+    <title>Círculo da Performance - Design Moderno</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.css">
     <style>
+        :root {
+            --primary-color: #333333; /* Cinza Chumbo */
+            --accent-color: #FFD700; /* Amarelo */
+            --text-light: #FFFFFF; /* Branco */
+            --text-dark: #000000; /* Preto */
+            --gradient: linear-gradient(135deg, #333333, #FFD700); /* Cinza Chumbo e Amarelo */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            color: #333;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--text-light);
+            min-height: 100vh;
+            color: var(--text-dark);
+            line-height: 1.6;
         }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: var(--gradient);
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
         #logo {
-            width: 150px;
-            margin-bottom: 20px;
+            width: 120px;
+            height: auto;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
+
         h1 {
-            color: #333;
-            font-size: 24px;
+            color: var(--text-light);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px auto;
+            max-width: 600px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        #login-section, #form-section {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .input-group {
             margin-bottom: 20px;
         }
-        #login-section {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background-color: #333;
-            color: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 20px;
-            box-shadow: 0px 0px 10px rgba(0,0,0,0.3);
+
+        input[type="text"], input[type="number"] {
             width: 100%;
-            max-width: 400px;
-        }
-        #form-section {
-            display: none;
-            background-color: #333;
-            color: white;
-            padding: 20px;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
             border-radius: 8px;
-            margin-top: 20px;
-            width: 100%;
-            max-width: 400px;
+            font-size: 16px;
+            transition: border-color 0.3s;
         }
+
+        input[type="text"]:focus, input[type="number"]:focus {
+            border-color: var(--accent-color);
+            outline: none;
+        }
+
         .question {
-            margin: 10px 0;
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            background: #F2F2F2;
         }
+
+        .button {
+            background: var(--accent-color);
+            color: var(--text-dark);
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
         #result-modal {
-            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            width: 90%;
+            max-width: 800px;
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background-color: white;
-            color: #333;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            z-index: 10;
-            width: 90%;
-            max-width: 600px;
+            z-index: 1000;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
-        #result-modal h2 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+
         #overlay {
-            display: none;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 5;
+            z-index: 999;
         }
-        .button {
-            margin-top: 10px;
-            padding: 10px 20px;
-            cursor: pointer;
-            background-color: #FFD700;
-            color: black;
-            border: none;
-            border-radius: 5px;
-            font-weight: bold;
-            width: 100%;
-            max-width: 200px;
-            transition: background 0.3s;
-        }
-        .button:hover {
-            background-color: #FFA500;
-        }
-        .question input {
-            width: 50px;
-            padding: 5px;
-            text-align: center;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+
+        @media (max-width: 768px) {
+            .card {
+                margin: 10px;
+                padding: 20px;
+            }
+
+            .question {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
         }
     </style>
 </head>
 <body>
-
-<img src="lomk.png" alt="Logo Círculo da Performance" id="logo">
-<h1>Círculo da Performance</h1>
-
-<div id="login-section">
-    <label for="name">Insira seu nome completo:</label>
-    <input type="text" id="name" required>
-    <button class="button" onclick="openForm()">Iniciar</button>
-</div>
-
-<div id="form-section">
-    <h2>Questionário de Avaliação</h2>
-    <div id="questions">
-        <!-- Perguntas serão geradas aqui -->
+    <div class="header">
+        <img src="lomk.png" alt="Logo Círculo da Performance" id="logo">
+        <h1>Círculo da Performance</h1>
     </div>
-    <button class="button" onclick="generateResults()">Ver Resultado</button>
-</div>
 
-<div id="overlay" onclick="closeModal()"></div>
+    <div class="container">
+        <div class="card" id="login-section">
+            <div class="input-group">
+                <label for="name">Nome completo:</label>
+                <input type="text" id="name" placeholder="Digite seu nome completo" required>
+            </div>
+            <button class="button" onclick="openForm()">Iniciar Avaliação</button>
+        </div>
 
-<div id="result-modal">
-    <h2>Resultado de <span id="userName"></span></h2>
-    <canvas id="resultChart" width="400" height="400"></canvas>
-    <p style="text-align:center; margin-top:20px;">
-        Análise do Gráfico: As áreas mais próximas do centro representam pontos a serem otimizados. Quanto mais fora do centro, melhor o desempenho no tópico específico.
-    </p>
-    <button class="button" onclick="downloadPDF()">Baixar em PDF</button>
-    <button class="button" onclick="closeModal()">Fechar</button>
-</div>
+        <div class="card" id="form-section" style="display: none;">
+            <h2>Questionário de Avaliação</h2>
+            <div id="questions">
+                <!-- Perguntas serão geradas aqui -->
+            </div>
+            <button class="button" onclick="generateResults()">Visualizar Resultados</button>
+        </div>
+    </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
-<script>
-    const topics = [
-        "Sono", "Endurance", "Treinamento Força", "Forma física/peso",
-        "Etilismo/Tabagismo", "Espiritualidade", "Ansiedade", "Hidratação",
-        "Frutas/Verduras", "Industrializados/Gordura", "Energia/Vitalidade", "Tempo/Intensidade de treino"
-    ];
+    <div id="overlay" onclick="closeModal()" style="display: none;"></div>
 
-    const scores = {};
+    <div id="result-modal" style="display: none;">
+        <h2>Resultado de <span id="userName"></span></h2>
+        <canvas id="resultChart" width="400" height="400"></canvas>
+        <p style="text-align:center; margin: 20px 0;">
+            Análise do Gráfico: As áreas mais próximas do centro representam pontos a serem otimizados. 
+            Quanto mais fora do centro, melhor o desempenho no tópico específico.
+        </p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
+            <button class="button" onclick="downloadPDF()">Baixar PDF</button>
+            <button class="button" onclick="shareChart()">Compartilhar Gráfico</button>
+            <button class="button" onclick="closeModal()" style="background: var(--primary-color);">Fechar</button>
+        </div>
+    </div>
 
-    function loadQuestions() {
-        const questionDiv = document.getElementById('questions');
-        topics.forEach(topic => {
-            const question = document.createElement('div');
-            question.className = 'question';
-            question.innerHTML = \`
-                <label>\${topic}:</label>
-                <input type="number" min="1" max="10" value="5" onchange="updateScore('\${topic}', this.value)">
-            \`;
-            questionDiv.appendChild(question);
-            scores[topic] = 5;
-        });
-    }
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
+    <script>
+        const topics = [
+            "Sono", "Endurance", "Treinamento Força", "Forma física/peso",
+            "Etilismo/Tabagismo", "Espiritualidade", "Ansiedade", "Hidratação",
+            "Frutas/Verduras", "Industrializados/Gordura", "Energia/Vitalidade", "Tempo/Intensidade de treino"
+        ];
 
-    function openForm() {
-        const name = document.getElementById('name').value;
-        if (!name.trim()) {
-            alert("Por favor, insira o nome completo.");
-            return;
+        const scores = {};
+
+        function loadQuestions() {
+            const questionDiv = document.getElementById('questions');
+            topics.forEach(topic => {
+                const question = document.createElement('div');
+                question.className = 'question';
+                question.innerHTML = `
+                    <label>${topic}:</label>
+                    <input type="number" min="1" max="10" value="5" onchange="updateScore('${topic}', this.value)">
+                `;
+                questionDiv.appendChild(question);
+                scores[topic] = 5;
+            });
         }
-        document.getElementById('form-section').style.display = 'block';
-        document.getElementById('login-section').style.display = 'none';
-    }
 
-    function updateScore(topic, value) {
-        scores[topic] = Number(value);
-    }
+        function openForm() {
+            const name = document.getElementById('name').value;
+            if (!name.trim()) {
+                alert("Por favor, insira seu nome completo.");
+                return;
+            }
+            document.getElementById('form-section').style.display = 'block';
+            document.getElementById('login-section').style.display = 'none';
+        }
 
-    function generateResults() {
-        const name = document.getElementById('name').value;
-        document.getElementById('userName').textContent = name;
-        createRadarChart();
-        document.getElementById('overlay').style.display = 'block';
-        document.getElementById('result-modal').style.display = 'block';
-    }
+        function updateScore(topic, value) {
+            scores[topic] = Number(value);
+        }
 
-    function createRadarChart() {
-        const ctx = document.getElementById('resultChart').getContext('2d');
-        const data = {
-            labels: topics,
-            datasets: [{
-                label: 'Círculo da Performance',
-                data: Object.values(scores),
-                fill: true,
-                backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                borderColor: 'rgba(54, 162, 235, 1)',
-                pointBackgroundColor: 'rgba(54, 162, 235, 1)',
-            }]
-        };
-        if (window.radarChart) window.radarChart.destroy(); // Limpa gráfico anterior, se houver
-        window.radarChart = new Chart(ctx, {
-            type: 'radar',
-            data: data,
-            options: {
-                scales: {
-                    r: {
-                        min: 0,
-                        max: 10,
-                        beginAtZero: true
+        function generateResults() {
+            const name = document.getElementById('name').value;
+            document.getElementById('userName').textContent = name;
+            createRadarChart();
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('result-modal').style.display = 'block';
+        }
+
+        function createRadarChart() {
+            const ctx = document.getElementById('resultChart').getContext('2d');
+            const data = {
+                labels: topics,
+                datasets: [{
+                    label: 'Círculo da Performance',
+                    data: Object.values(scores),
+                    fill: true,
+                    backgroundColor: 'rgba(255, 215, 0, 0.2)',
+                    borderColor: 'rgba(255, 215, 0, 1)',
+                    pointBackgroundColor: 'rgba(255, 215, 0, 1)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgba(255, 215, 0, 1)'
+                }]
+            };
+            if (window.radarChart) window.radarChart.destroy();
+            window.radarChart = new Chart(ctx, {
+                type: 'radar',
+                data: data,
+                options: {
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            min: 0,
+                            max: 10,
+                            ticks: {
+                                stepSize: 2
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
                     }
                 }
-            }
-        });
-    }
+            });
+        }
 
-    function closeModal() {
-        document.getElementById('overlay').style.display = 'none';
-        document.getElementById('result-modal').style.display = 'none';
-    }
+        function closeModal() {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('result-modal').style.display = 'none';
+        }
 
-    function downloadPDF() {
-        const { jsPDF } = window.jspdf;
-        const pdf = new jsPDF();
-        pdf.text(\`Resultado de \${document.getElementById('userName').textContent}\`, 10, 10);
-        pdf.addImage(document.getElementById('resultChart').toDataURL(), 'PNG', 10, 20, 180, 160);
-        pdf.save('resultado_circulo_da_performance.pdf');
-    }
+        function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF();
+            const canvas = document.getElementById('resultChart');
+            const name = document.getElementById('userName').textContent;
+            
+            pdf.setFontSize(16);
+            pdf.text(`Círculo da Performance - ${name}`, 10, 20);
+            
+            const imgData = canvas.toDataURL('image/png');
+            pdf.addImage(imgData, 'PNG', 10, 30, 190, 190);
+            
+            pdf.setFontSize(12);
+            pdf.text('Análise do Gráfico:', 10, 230);
+            pdf.text('As áreas mais próximas do centro representam pontos a serem otimizados.', 10, 240);
+            pdf.text('Quanto mais fora do centro, melhor o desempenho no tópico específico.', 10, 250);
+            
+            pdf.save('circulo-da-performance.pdf');
+        }
 
-    // Chama a função para carregar as perguntas ao carregar a página
-    window.onload = loadQuestions;
-</script>
+        function shareChart() {
+            alert("Compartilhar gráfico em breve!");
+            // Aqui você poderia adicionar a funcionalidade de compartilhamento desejada.
+        }
 
+        window.onload = loadQuestions;
+    </script>
 </body>
 </html>
