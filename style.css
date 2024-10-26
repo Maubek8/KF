@@ -1,0 +1,22 @@
+:root {
+    --primary-color: #333333;
+    --accent-color: #FFD700;
+    --text-light: #FFFFFF;
+    --text-dark: #000000;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: var(--text-light);
+    min-height: 100vh;
+    color: var(--text-dark);
+    line-height: 1.6;
+}
+
+.container, .card, .button, #result-modal, .button-group, etc... /* Coloque todo o CSS relevante aqui */
