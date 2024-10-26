@@ -198,7 +198,7 @@
                 pointBackgroundColor: 'rgba(54, 162, 235, 1)',
             }]
         };
-        if (window.radarChart) window.radarChart.destroy(); // Para limpar gráfico anterior
+        if (window.radarChart) window.radarChart.destroy(); // Limpa gráfico anterior, se houver
         window.radarChart = new Chart(ctx, {
             type: 'radar',
             data: data,
@@ -227,7 +227,8 @@
         pdf.save('resultado_circulo_da_performance.pdf');
     }
 
-    loadQuestions();
+    // Chama a função para carregar as perguntas ao carregar a página
+    window.onload = loadQuestions;
 </script>
 
 </body>
