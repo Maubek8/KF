@@ -1,11 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <base href="/" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Círculo da Performance - Design Moderno</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    
+    <!-- Chart.js CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.css">
+
     <style>
         :root {
             --primary-color: #333333; /* Cinza Chumbo */
@@ -27,6 +32,7 @@
             min-height: 100vh;
             color: var(--text-dark);
             line-height: 1.6;
+            overflow: hidden; /* Desabilita o scroll do fundo */
         }
 
         .container {
@@ -132,6 +138,8 @@
             padding: 30px;
             width: 90%;
             max-width: 800px;
+            height: 80vh; /* Define altura fixa */
+            overflow-y: auto; /* Adiciona rolagem vertical no modal */
             position: fixed;
             top: 50%;
             left: 50%;
@@ -322,7 +330,6 @@
 
         function shareChart() {
             alert("Compartilhar gráfico em breve!");
-            // Aqui você poderia adicionar a funcionalidade de compartilhamento desejada.
         }
 
         window.onload = loadQuestions;
