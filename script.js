@@ -1,5 +1,3 @@
-document.addEventListener("DOMContentLoaded", loadQuestions);
-
 const topics = [
     "Sono", "Endurance", "Treinamento Força", "Forma física/peso",
     "Etilismo/Tabagismo", "Espiritualidade", "Ansiedade", "Hidratação",
@@ -46,14 +44,10 @@ function generateResults() {
 
 function createRadarChart() {
     const ctx = document.getElementById('resultChart').getContext('2d');
-    // Aqui vem o código para criar o gráfico de radar com Chart.js
-}
-
-function downloadPDF() {
-    // Função de download de PDF com jsPDF
-}
-
-function closeModal() {
-    document.getElementById('overlay').style.display = 'none';
-    document.getElementById('result-modal').style.display = 'none';
-}
+    const data = {
+        labels: topics,
+        datasets: [{
+            label: 'Círculo da Performance',
+            data: Object.values(scores),
+            fill: true,
+            background
