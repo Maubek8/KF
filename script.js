@@ -12,12 +12,15 @@ const topics = [
     "Energia/Vitalidade": "Avalie sua disposição ao longo do dia. Nota 1: Cansaço constante. Nota 10: Alta energia e vitalidade.",
     "Tempo/Intensidade de treino": "Avalie sua rotina de treinos. Nota 1: Irregular ou inexistente. Nota 10: Treinos regulares e consistentes."
 };
-
 let currentQuestion = 0;
 const scores = {};
 
+// Adiciona o evento ao botão após o DOM estar carregado
 document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('start-button').addEventListener('click', startEvaluation);
+    const startButton = document.getElementById('start-button');
+    if (startButton) {
+        startButton.addEventListener('click', startEvaluation);
+    }
 });
 
 function startEvaluation() {
@@ -58,7 +61,28 @@ function updateScore(topic, value) {
 }
 
 function generateResults() {
-    alert("Resultados gerados!");
+    document.getElementById('overlay').style.display = 'block';
+    document.getElementById('result-modal').style.display = 'block';
+    document.getElementById('userName').textContent = document.getElementById('name').value;
+    createRadarChart();
+}
+
+function createRadarChart() {
+    const ctx = document.getElementById('resultChart').getContext('2d');
+    const data = {
+        labels: topics,
+        datasets: [{
+            label: 'Círculo da Performance',
+            data: Object.values(scores),
+            backgroundColor: 'rgba(255, 215, 0, 0.2)',
+            borderColor: 'rgba(255, 215, 0, 1)',
+        }]
+    };
+
+    new Chart(ctx, {
+        type: 'radar',
+        data: data,
+    });
 }
 
 function closeModal() {
