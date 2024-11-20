@@ -17,11 +17,13 @@ const scores = {};
 
 // Adiciona o evento ao botão após o DOM estar carregado
 document.addEventListener('DOMContentLoaded', () => {
-    const startButton = document.getElementById('start-button');
-    if (startButton) {
-        startButton.addEventListener('click', startEvaluation);
-    }
+    document.getElementById('start-button').addEventListener('click', startEvaluation);
 });
+
+function toggleExplanation() {
+    const explanation = document.getElementById('explanation');
+    explanation.style.display = explanation.style.display === 'none' ? 'block' : 'none';
+}
 
 function startEvaluation() {
     const name = document.getElementById('name').value.trim();
@@ -58,34 +60,4 @@ function prevQuestion() {
 
 function updateScore(topic, value) {
     scores[topic] = Number(value);
-}
-
-function generateResults() {
-    document.getElementById('overlay').style.display = 'block';
-    document.getElementById('result-modal').style.display = 'block';
-    document.getElementById('userName').textContent = document.getElementById('name').value;
-    createRadarChart();
-}
-
-function createRadarChart() {
-    const ctx = document.getElementById('resultChart').getContext('2d');
-    const data = {
-        labels: topics,
-        datasets: [{
-            label: 'Círculo da Performance',
-            data: Object.values(scores),
-            backgroundColor: 'rgba(255, 215, 0, 0.2)',
-            borderColor: 'rgba(255, 215, 0, 1)',
-        }]
-    };
-
-    new Chart(ctx, {
-        type: 'radar',
-        data: data,
-    });
-}
-
-function closeModal() {
-    document.getElementById('overlay').style.display = 'none';
-    document.getElementById('result-modal').style.display = 'none';
 }
