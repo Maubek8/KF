@@ -1,98 +1,18 @@
-:root {
-    --primary-color: #333333; /* Cinza Chumbo */
-    --accent-color: #FFD700; /* Amarelo */
-    --text-light: #FFFFFF; /* Branco */
-    --text-dark: #000000; /* Preto */
-    --gradient: linear-gradient(135deg, #333333, #FFD700); /* Fundo Gradiente */
-}
-
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    padding: 0;
-    background: var(--gradient);
-    color: var(--text-dark);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-}
-
-.header {
-    width: 100%;
-    text-align: center;
-    padding: 20px 0;
-    background: var(--gradient);
-    color: var(--text-light);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-#logo {
-    width: 100px;
-    height: auto;
-    margin-bottom: 10px;
-}
-
-h1 {
-    font-size: 2.5rem;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.container {
-    width: 100%;
-    max-width: 900px;
-    margin: 20px auto;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.card {
+.explanation {
+    margin-bottom: 20px;
     background: rgba(255, 255, 255, 0.8);
-    border-radius: 15px;
-    padding: 20px;
-    width: 100%;
-    max-width: 500px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-}
-
-.input-group label {
-    font-weight: bold;
-    display: block;
-    margin-bottom: 8px;
-}
-
-input[type="text"] {
-    width: 100%;
-    padding: 10px;
-    border: 2px solid rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     font-size: 1rem;
-    transition: border-color 0.3s ease-in-out;
-    background: #f9f9f9;
+    color: var(--primary-color);
 }
 
-input[type="text"]:focus {
-    border-color: var(--accent-color);
-    outline: none;
+.explanation p {
+    margin: 10px 0;
+    line-height: 1.5;
 }
 
-.button {
-    width: 100%;
-    padding: 10px 15px;
-    margin-top: 20px;
-    background: var(--accent-color);
-    color: var(--text-dark);
-    border: none;
-    border-radius: 5px;
-    font-size: 1.2rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+.explanation strong {
+    font-size: 1.1rem;
 }
