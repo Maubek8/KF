@@ -1,13 +1,7 @@
 console.log("Script carregado com sucesso");
 
 const topics = [
-    "Sono", "Endurance", "Treinamento Força", "Forma física/peso",
-    "Etilismo/Tabagismo", "Espiritualidade", "Ansiedade", "Hidratação",
-    "Frutas/Verduras", "Industrializados/Gordura", "Energia/Vitalidade", "Tempo/Intensidade de treino"
-];
-
-const explanations = {
-    "Sono": "Avalie a qualidade e duração do seu sono. Nota 1: Sono interrompido e curto. Nota 10: Sono reparador de 7-9 horas.",
+       "Sono": "Avalie a qualidade e duração do seu sono. Nota 1: Sono interrompido e curto. Nota 10: Sono reparador de 7-9 horas.",
     "Endurance": "Avalie sua capacidade de realizar atividades físicas prolongadas. Nota 1: Baixa resistência. Nota 10: Alta resistência.",
     "Treinamento Força": "Avalie sua força muscular durante atividades. Nota 1: Pouca força ou nenhum treino. Nota 10: Treino regular e força elevada.",
     "Forma física/peso": "Avalie sua satisfação com seu peso e composição corporal. Nota 1: Muito insatisfeito. Nota 10: Muito satisfeito.",
@@ -31,21 +25,10 @@ function loadQuestions() {
         question.innerHTML = `
             <label>${topic}:</label>
             <input type="number" min="1" max="10" value="5" onchange="updateScore('${topic}', this.value)">
-            <button class="help-button" onclick="showHelp('${topic}')">?</button>
-            <div class="help-text" id="help-${topic}" style="display: none;">${explanations[topic]}</div>
         `;
         questionDiv.appendChild(question);
         scores[topic] = 5;
     });
-}
-
-function showHelp(topic) {
-    const helpText = document.getElementById(`help-${topic}`);
-    if (helpText.style.display === "none") {
-        helpText.style.display = "block";
-    } else {
-        helpText.style.display = "none";
-    }
 }
 
 function openForm() {
@@ -116,23 +99,7 @@ function closeModal() {
 }
 
 function downloadPDF() {
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF();
-    const canvas = document.getElementById('resultChart');
-    const name = document.getElementById('userName').textContent;
-    
-    pdf.setFontSize(16);
-    pdf.text(`Círculo da Performance - ${name}`, 10, 20);
-    
-    const imgData = canvas.toDataURL('image/png');
-    pdf.addImage(imgData, 'PNG', 10, 30, 190, 190);
-    
-    pdf.setFontSize(12);
-    pdf.text('Análise do Gráfico:', 10, 230);
-    pdf.text('As áreas mais próximas do centro representam pontos a serem otimizados.', 10, 240);
-    pdf.text('Quanto mais fora do centro, melhor o desempenho no tópico específico.', 10, 250);
-    
-    pdf.save('circulo-da-performance.pdf');
+    alert("Função de download ainda não implementada.");
 }
 
 function shareChart() {
