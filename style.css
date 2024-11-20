@@ -3,97 +3,96 @@
     --accent-color: #FFD700; /* Amarelo */
     --text-light: #FFFFFF; /* Branco */
     --text-dark: #000000; /* Preto */
-    --gradient: linear-gradient(135deg, #333333, #FFD700);
+    --gradient: linear-gradient(135deg, #333333, #FFD700); /* Fundo Gradiente */
 }
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: var(--text-light);
-    color: var(--text-dark);
     margin: 0;
     padding: 0;
+    background: var(--gradient);
+    color: var(--text-dark);
     display: flex;
     flex-direction: column;
     align-items: center;
+    min-height: 100vh;
 }
 
 .header {
-    background: var(--gradient);
+    width: 100%;
     text-align: center;
-    padding: 20px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    padding: 20px 0;
+    background: var(--gradient);
+    color: var(--text-light);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 #logo {
-    width: 120px;
-    margin-bottom: 15px;
-    border-radius: 10px;
+    width: 100px;
+    height: auto;
+    margin-bottom: 10px;
 }
 
 h1 {
-    color: var(--text-light);
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    font-size: 2.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .container {
     width: 100%;
     max-width: 900px;
+    margin: 20px auto;
     padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
 }
 
 .card {
-    background: white;
+    background: rgba(255, 255, 255, 0.8);
     border-radius: 15px;
     padding: 20px;
     width: 100%;
-    max-width: 600px;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    max-width: 500px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.input-group label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 8px;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease-in-out;
+    background: #f9f9f9;
+}
+
+input[type="text"]:focus {
+    border-color: var(--accent-color);
+    outline: none;
 }
 
 .button {
+    width: 100%;
+    padding: 10px 15px;
+    margin-top: 20px;
     background: var(--accent-color);
     color: var(--text-dark);
-    padding: 10px 20px;
     border: none;
-    border-radius: 8px;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    font-weight: bold;
     cursor: pointer;
-    transition: transform 0.2s ease;
-    width: 100%;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-}
-
-#question-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.button-group {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    margin-top: 20px;
-}
-
-#result-modal {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    width: 90%;
-    max-width: 700px;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1000;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
