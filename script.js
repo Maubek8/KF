@@ -12,9 +12,12 @@ const topics = [
     "Energia/Vitalidade": "Avalie sua disposição ao longo do dia. Nota 1: Cansaço constante. Nota 10: Alta energia e vitalidade.",
     "Tempo/Intensidade de treino": "Avalie sua rotina de treinos. Nota 1: Irregular ou inexistente. Nota 10: Treinos regulares e consistentes."
 };
-
 let currentQuestion = 0;
 const scores = {};
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('start-button').addEventListener('click', startEvaluation);
+});
 
 function startEvaluation() {
     const name = document.getElementById('name').value.trim();
