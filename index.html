@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Ferramenta interativa para avaliação de desempenho e bem-estar - Círculo da Performance.">
+    <meta name="keywords" content="avaliação, desempenho, bem-estar, gráfico, performance">
+    <meta name="author" content="Seu Nome ou Organização">
+    <title>Círculo da Performance - Design Moderno</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="image/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="image/favicon.png" type="image/png">
+    <!-- Carregar Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" integrity="sha384-[HASH]" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="header">
+        <img src="image/alogomk.jpg" alt="Logo do Círculo da Performance" id="logo">
+        <h1>Círculo da Performance</h1>
+    </div>
+    
+    <div class="container">
+        <!-- Login Section -->
+        <div class="card" id="login-section">
+            <div class="input-group">
+                <label for="name">Nome completo:</label>
+                <input type="text" id="name" placeholder="Digite seu nome completo" required aria-label="Nome completo">
+            </div>
+            <button class="button" onclick="openForm()">Iniciar Avaliação</button>
+        </div>
+
+        <!-- Form Section -->
+        <div class="card" id="form-section" style="display: none;">
+            <h2>Questionário de Avaliação</h2>
+            <p>Por favor, responda cada pergunta com um número de 1 a 10. Use o botão "?" ao lado de cada tópico para mais informações.</p>
+            <div id="questions"></div>
+            <button class="button" onclick="generateResults()">Visualizar Resultados</button>
+        </div>
+    </div>
+
+    <!-- Overlay and Modal for Results -->
+    <div id="overlay" onclick="closeModal()" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 999;"></div>
+
+    <div id="result-modal" style="display: none;" class="modal">
+        <h2>Resultado de <span id="userName"></span></h2>
+        <canvas id="resultChart" width="740" height="740"></canvas>
+        <p>Análise do Gráfico: As áreas mais próximas do centro representam pontos a serem otimizados. Quanto mais fora do centro, melhor o desempenho.</p>
+        <div class="button-group">
+            <button class="button" onclick="downloadPDF()">Baixar PDF</button>
+            <button class="button" onclick="shareChart()">Compartilhar Gráfico</button>
+            <button class="button" onclick="closeModal()">Fechar</button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+</body>
+</html>
