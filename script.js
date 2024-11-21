@@ -1,4 +1,4 @@
-// Lista de tópicos com descrições
+// Lista de tópicos com descrições e objetivos
 const topics = [
     { name: "Sono", description: "Avalie a qualidade e duração do seu sono. Nota 1: Sono interrompido e curto. Nota 10: Sono reparador de 7-9 horas." },
     { name: "Endurance", description: "Avalie sua capacidade de realizar atividades físicas prolongadas. Nota 1: Baixa resistência. Nota 10: Alta resistência." },
@@ -108,6 +108,23 @@ function generateResults() {
     new Chart(ctx, {
         type: 'radar',
         data: chartData,
+        options: {
+            scales: {
+                r: {
+                    beginAtZero: true,
+                    min: 0,
+                    max: 10,
+                    ticks: {
+                        stepSize: 2
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
     });
 
     // Mostra o modal
