@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const startButton = document.getElementById('start-button');
     const infoButton = document.getElementById('info-button');
-    const overlay = document.getElementById('overlay');
     const closeButton = document.getElementById('close-modal');
     const downloadButton = document.getElementById('download-pdf');
     const nextButton = document.getElementById('next-button');
@@ -12,22 +11,13 @@ document.addEventListener('DOMContentLoaded', () => {
         { name: "Sono", description: "Avalie sua qualidade de sono." },
         { name: "Endurance", description: "Avalie sua resistência física." },
         { name: "Treinamento Força", description: "Avalie sua força muscular." },
-        { name: "Forma física/peso", description: "Avalie seu peso e composição corporal." },
-        { name: "Etilismo/Tabagismo", description: "Avalie seu consumo de álcool/tabaco." },
-        { name: "Espiritualidade", description: "Avalie sua conexão espiritual." },
-        { name: "Ansiedade", description: "Avalie seu nível de ansiedade." },
-        { name: "Hidratação", description: "Avalie sua ingestão de água." },
-        { name: "Frutas/Verduras", description: "Avalie seu consumo de frutas e verduras." },
-        { name: "Industrializados/Gordura", description: "Avalie seu consumo de alimentos processados." },
-        { name: "Energia/Vitalidade", description: "Avalie sua energia diária." },
-        { name: "Tempo/Intensidade de treino", description: "Avalie sua rotina de treinos." }
+        // Outros tópicos...
     ];
 
     let currentQuestion = 0;
     const scores = {};
     let radarChart;
 
-    // Botões e eventos principais
     startButton.addEventListener('click', startEvaluation);
     infoButton.addEventListener('click', toggleExplanation);
     closeButton.addEventListener('click', closeModal);
@@ -36,25 +26,8 @@ document.addEventListener('DOMContentLoaded', () => {
     prevButton.addEventListener('click', prevQuestion);
     resultButton.addEventListener('click', generateResults);
 
-    document.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter') {
-            const questionInput = document.getElementById('question-input');
-            if (questionInput && questionInput.value) {
-                updateScore(topics[currentQuestion].name, questionInput.value);
-                if (currentQuestion < topics.length - 1) {
-                    nextQuestion();
-                } else {
-                    generateResults();
-                }
-            } else {
-                alert("Por favor, insira um valor válido antes de continuar.");
-            }
-        }
-    });
-
     function toggleExplanation() {
-        const explanation = document.getElementById('explanation');
-        explanation.classList.toggle('hidden');
+        document.getElementById('explanation').classList.toggle('hidden');
     }
 
     function startEvaluation() {
@@ -74,26 +47,22 @@ document.addEventListener('DOMContentLoaded', () => {
         questionContainer.innerHTML = `
             <h3>${topic.name}</h3>
             <p>${topic.description}</p>
-            <input type="number" id="question-input" min="1" max="10" placeholder="Insira um número de 1 a 10"
-                value="${scores[topic.name] || ''}">
+            <input type="number" min="1" max="10" placeholder="Nota de 1 a 10" 
+                value="${scores[topic.name] || ''}" onchange="updateScore('${topic.name}', this.value)">
         `;
-        const questionInput = document.getElementById('question-input');
-        questionInput.focus();
-        questionInput.addEventListener('change', () => updateScore(topic.name, questionInput.value));
-
         prevButton.classList.toggle('hidden', currentQuestion === 0);
         nextButton.classList.toggle('hidden', currentQuestion === topics.length - 1);
         resultButton.classList.toggle('hidden', currentQuestion !== topics.length - 1);
     }
 
-    function updateScore(topic, value) {
-        const parsedValue = parseInt(value, 10);
-        if (isNaN(parsedValue) || parsedValue < 1 || parsedValue > 10) {
-            alert("Por favor, insira um valor entre 1 e 10.");
+    window.updateScore = function (topic, value) {
+        const score = parseInt(value, 10);
+        if (isNaN(score) || score < 1 || score > 10) {
+            alert("Insira uma nota válida entre 1 e 10.");
             return;
         }
-        scores[topic] = parsedValue;
-    }
+        scores[topic] = score;
+    };
 
     function nextQuestion() {
         if (currentQuestion < topics.length - 1) {
@@ -110,43 +79,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function generateResults() {
-        const chartData = topics.map(topic => scores[topic.name] || 0);
-        const radarCanvas = document.getElementById('resultChart');
-        if (!radarCanvas) return;
-
-        const radarContext = radarCanvas.getContext('2d');
+        const data = topics.map(t => scores[t.name] || 0);
+        const ctx = document.getElementById('resultChart').getContext('2d');
         if (radarChart) radarChart.destroy();
-
-        radarChart = new Chart(radarContext, {
+        radarChart = new Chart(ctx, {
             type: 'radar',
-            data: {
-                labels: topics.map(topic => topic.name),
-                datasets: [{
-                    label: 'Desempenho Atual',
-                    data: chartData,
-                    backgroundColor: 'rgba(255, 215, 0, 0.4)',
-                    borderColor: 'rgba(255, 215, 0, 1)'
-                }]
-            },
-            options: {
-                scales: {
-                    r: { beginAtZero: true, max: 10, ticks: { stepSize: 2 } }
-                }
-            }
+            data: { labels: topics.map(t => t.name), datasets: [{ data, label: 'Resultados' }] },
         });
-
-        const improvementBars = document.getElementById('improvement-bars');
-        improvementBars.innerHTML = '';
-        topics.forEach((topic, index) => {
-            const score = chartData[index];
-            const improvement = 100 - score * 10;
-            improvementBars.innerHTML += `
-                <div>
-                    <p>${topic.name}: ${improvement}%</p>
-                    <progress value="${improvement}" max="100"></progress>
-                </div>`;
-        });
-
         document.getElementById('overlay').classList.remove('hidden');
         document.getElementById('result-modal').classList.remove('hidden');
     }
@@ -156,73 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('result-modal').classList.add('hidden');
     }
 
- function downloadPDF() {
-    // Obter os elementos do gráfico de radar e das barras de melhoria
-    const radarCanvas = document.getElementById('resultChart');
-    const improvementBars = document.getElementById('improvement-bars');
-
-    if (!radarCanvas || !improvementBars) {
-        alert("Os resultados não estão disponíveis para impressão.");
-        return;
+    function downloadPDF() {
+        alert("Por enquanto, o botão Imprimir só exibe esta mensagem.");
     }
-
-    // Criar uma nova janela com os resultados
-    const printWindow = window.open('', '_blank');
-    if (!printWindow) {
-        alert("Não foi possível abrir a janela de impressão.");
-        return;
-    }
-
-    // HTML da página de impressão
-    const htmlContent = `
-        <!DOCTYPE html>
-        <html lang="pt-BR">
-        <head>
-            <meta charset="UTF-8">
-            <title>Resultados do Círculo da Performance</title>
-            <style>
-                body {
-                    font-family: Arial, sans-serif;
-                    margin: 20px;
-                    text-align: center;
-                }
-                h2, h3 {
-                    margin-bottom: 20px;
-                }
-                canvas {
-                    display: block;
-                    margin: 0 auto 20px;
-                }
-                .improvement-item {
-                    margin: 10px 0;
-                }
-                progress {
-                    width: 100%;
-                }
-            </style>
-        </head>
-        <body>
-            <h2>Resultados do Círculo da Performance</h2>
-            <canvas id="printChart" width="500" height="500"></canvas>
-            <div>
-                <h3>Potencial de Melhora</h3>
-                ${improvementBars.innerHTML}
-            </div>
-            <script>
-                // Clonar o gráfico de radar na nova janela
-                const printCanvas = document.getElementById('printChart');
-                const printContext = printCanvas.getContext('2d');
-                const originalCanvas = opener.document.getElementById('resultChart');
-                printContext.drawImage(originalCanvas, 0, 0);
-                // Iniciar a impressão
-                window.onload = () => window.print();
-            </script>
-        </body>
-        </html>
-    `;
-
-    // Adicionar o conteúdo HTML à nova janela
-    printWindow.document.open();
-    printWindow.document.write(htmlContent);
-    printWindow.document.close();
-}
+});
