@@ -1,148 +1,216 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const startButton = document.getElementById('start-button');
-    const overlay = document.getElementById('overlay');
-    const resultButton = document.getElementById('result-button');
-    const questionInput = document.querySelector('#question-container input');
+/* Global Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9; /* Fundo claro */
+    color: #333;
+}
 
-    if (startButton) {
-        startButton.addEventListener('click', startEvaluation);
+/* Cabeçalho */
+.header {
+    text-align: center;
+    padding: 20px;
+    background-color: #FFD700; /* Fundo amarelo */
+    color: #000; /* Texto preto */
+    margin-bottom: 20px;
+}
+
+.header img {
+    width: 80px; /* Logo proporcional */
+    margin-bottom: 10px;
+}
+
+.header h1 {
+    margin: 10px 0;
+    font-size: 24px;
+    color: #000; /* Texto preto */
+}
+
+.header .powered-by {
+    font-size: 14px;
+    color: #333; /* Texto cinza */
+    margin-top: 5px;
+}
+
+/* Container principal */
+.container {
+    width: 80%;
+    margin: 0 auto;
+    text-align: center;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    max-width: 600px;
+}
+
+/* Seções */
+.card {
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #f8f9fa; /* Fundo leve */
+}
+
+/* Grupo de Input */
+.input-group {
+    margin: 20px 0;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.input-group input {
+    width: calc(100% - 20px);
+    max-width: 400px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+/* Botões */
+.button {
+    padding: 10px 20px;
+    margin: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #FFD700; /* Fundo amarelo */
+    color: #333; /* Texto preto */
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.button.secondary {
+    background-color: #6c757d; /* Cinza escuro */
+    color: #fff;
+}
+
+.button:hover {
+    background-color: #e6c200; /* Amarelo mais escuro */
+}
+
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* Modal */
+#result-modal {
+    position: fixed;
+    top: 10%;
+    left: 50%;
+    transform: translate(-50%, 0);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    width: 90%;
+    max-width: 600px;
+    z-index: 1000;
+    overflow-y: auto;
+    max-height: 80%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+#overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 999;
+}
+
+/* Estilos do Gráfico */
+canvas {
+    margin: 20px auto;
+    display: block;
+}
+
+/* Estilos para as Barras de Potencial de Melhora */
+.improvement-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.improvement-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.improvement-item p {
+    margin: 0;
+    font-size: 14px;
+    flex: 1;
+    color: #333; /* Texto cinza */
+}
+
+.improvement-item progress {
+    flex: 2;
+    height: 20px;
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #f3f3f3;
+}
+
+.improvement-item progress::-webkit-progress-bar {
+    background-color: #f3f3f3;
+    border-radius: 10px;
+}
+
+.improvement-item progress::-webkit-progress-value {
+    background-color: #FFD700; /* Amarelo */
+    border-radius: 10px;
+}
+
+.improvement-item progress::-moz-progress-bar {
+    background-color: #FFD700; /* Amarelo */
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .container {
+        width: 95%;
+        padding: 15px;
     }
 
-    if (overlay) {
-        overlay.addEventListener('click', closeModal);
+    .header img {
+        width: 60px; /* Reduz tamanho da logo */
     }
 
-    if (resultButton) {
-        resultButton.addEventListener('click', generateResults);
+    .header h1 {
+        font-size: 20px;
     }
-});
 
-const topics = [
-    { name: "Sono", description: "Avalie sua qualidade de sono." },
-    { name: "Endurance", description: "Avalie sua resistência física." },
-    { name: "Treinamento Força", description: "Avalie sua força muscular." },
-    { name: "Forma física/peso", description: "Avalie seu peso e composição corporal." },
-    { name: "Etilismo/Tabagismo", description: "Avalie seu consumo de álcool/tabaco." },
-    { name: "Espiritualidade", description: "Avalie sua conexão espiritual." },
-    { name: "Ansiedade", description: "Avalie seu nível de ansiedade." },
-    { name: "Hidratação", description: "Avalie sua ingestão de água." },
-    { name: "Frutas/Verduras", description: "Avalie seu consumo de frutas e verduras." },
-    { name: "Industrializados/Gordura", description: "Avalie seu consumo de alimentos processados." },
-    { name: "Energia/Vitalidade", description: "Avalie sua energia diária." },
-    { name: "Tempo/Intensidade de treino", description: "Avalie sua rotina de treinos." },
-];
-
-let currentQuestion = 0;
-const scores = {};
-let resultChart;
-
-function toggleExplanation() {
-    const explanation = document.getElementById('explanation');
-    explanation.style.display = explanation.style.display === 'none' ? 'block' : 'none';
-}
-
-function startEvaluation() {
-    const name = document.getElementById('name').value.trim();
-    if (!name) {
-        alert("Por favor, insira seu nome completo.");
-        return;
+    .header .powered-by {
+        font-size: 12px;
     }
-    document.getElementById('login-section').style.display = 'none';
-    document.getElementById('question-section').style.display = 'block';
-    loadQuestion();
-}
 
-function loadQuestion() {
-    const questionContainer = document.getElementById('question-container');
-    const topic = topics[currentQuestion];
-    questionContainer.innerHTML = `
-        <h3>${topic.name}</h3>
-        <p>${topic.description}</p>
-        <input type="number" min="1" max="10" placeholder="Insira um número de 1 a 10" 
-            value="${scores[topic.name] || ''}" onchange="updateScore('${topic.name}', this.value)">
-    `;
-    const inputField = questionContainer.querySelector('input');
-    inputField.focus();
-    inputField.addEventListener('keypress', handleEnterKey);
-
-    document.getElementById('prev-button').style.display = currentQuestion > 0 ? 'block' : 'none';
-    document.getElementById('next-button').style.display = currentQuestion < topics.length - 1 ? 'block' : 'none';
-    document.getElementById('result-button').style.display = currentQuestion === topics.length - 1 ? 'block' : 'none';
-}
-
-function handleEnterKey(event) {
-    if (event.key === 'Enter') {
-        if (currentQuestion < topics.length - 1) {
-            nextQuestion();
-        } else {
-            generateResults();
-        }
+    .button {
+        font-size: 12px;
+        padding: 8px 16px;
     }
-}
 
-function updateScore(topic, value) {
-    const parsedValue = parseInt(value, 10);
-    if (parsedValue < 1 || parsedValue > 10) {
-        alert("Por favor, insira um valor entre 1 e 10.");
-        return;
+    #result-modal {
+        width: 95%;
+        max-height: 80%;
     }
-    scores[topic] = parsedValue;
-}
 
-function nextQuestion() {
-    if (currentQuestion < topics.length - 1) {
-        currentQuestion++;
-        loadQuestion();
+    canvas {
+        max-width: 100%;
+        height: auto;
     }
-}
-
-function prevQuestion() {
-    if (currentQuestion > 0) {
-        currentQuestion--;
-        loadQuestion();
-    }
-}
-
-function generateResults() {
-    const chartData = topics.map(topic => scores[topic.name] || 0);
-    const improvementList = document.getElementById('improvement-list');
-    improvementList.innerHTML = topics.map((topic, index) => `
-        <li>${topic.name}: ${100 - chartData[index] * 10}% de potencial de melhora</li>
-    `).join('');
-
-    const ctx = document.getElementById('resultChart').getContext('2d');
-    if (resultChart) resultChart.destroy();
-    resultChart = new Chart(ctx, {
-        type: 'radar',
-        data: {
-            labels: topics.map(topic => topic.name),
-            datasets: [{
-                label: 'Círculo da Performance',
-                data: chartData,
-                backgroundColor: 'rgba(255, 215, 0, 0.4)',
-                borderColor: 'rgba(255, 215, 0, 1)',
-            }]
-        },
-        options: {
-            scales: { r: { beginAtZero: true, max: 10 } },
-            plugins: { legend: { display: false } }
-        }
-    });
-
-    document.getElementById('overlay').style.display = 'block';
-    document.getElementById('result-modal').style.display = 'block';
-}
-
-function closeModal() {
-    document.getElementById('overlay').style.display = 'none';
-    document.getElementById('result-modal').style.display = 'none';
-}
-
-function downloadPDF() {
-    const pdf = new jsPDF();
-    const canvas = document.getElementById('resultChart');
-    const imgData = canvas.toDataURL('image/png');
-    pdf.text("Círculo da Performance - Resultados", 10, 10);
-    pdf.addImage(imgData, 'PNG', 10, 20, 180, 180);
-    pdf.save('circulo_performance.pdf');
 }
