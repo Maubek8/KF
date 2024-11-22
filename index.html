@@ -3,12 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Ferramenta interativa para avaliação de desempenho e bem-estar - Círculo da Performance.">
-    <meta name="keywords" content="avaliação, desempenho, bem-estar, gráfico, performance">
-    <meta name="author" content="Seu Nome ou Organização">
     <title>Círculo da Performance</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="image/favicon.ico" type="image/x-icon">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
 </head>
@@ -19,13 +15,11 @@
     </div>
 
     <main class="container">
-        <!-- Tela Inicial -->
         <section class="card" id="login-section">
             <button class="button secondary" onclick="toggleExplanation()">O que é o Círculo da Performance?</button>
             <div id="explanation" style="display: none;">
                 <h3>O que é o Círculo da Performance?</h3>
-                <p>É uma ferramenta interativa que avalia aspectos fundamentais da sua saúde, bem-estar e desempenho.</p>
-                <p>Responda cada pergunta com uma nota de 1 a 10, onde 1 indica menor satisfação ou desempenho e 10 representa o máximo.</p>
+                <p>Ferramenta para avaliar aspectos fundamentais da sua saúde e desempenho.</p>
             </div>
             <div class="input-group">
                 <label for="name">Nome completo:</label>
@@ -34,11 +28,8 @@
             <button class="button" id="start-button">Iniciar Avaliação</button>
         </section>
 
-        <!-- Perguntas -->
         <section class="card" id="question-section" style="display: none;">
-            <div id="question-container">
-                <!-- Perguntas dinâmicas -->
-            </div>
+            <div id="question-container"></div>
             <div class="button-group">
                 <button class="button" id="next-button" onclick="nextQuestion()">Próxima</button>
                 <button class="button" id="prev-button" onclick="prevQuestion()" style="display: none;">Anterior</button>
@@ -47,21 +38,11 @@
         </section>
     </main>
 
-    <!-- Modal de Resultados -->
     <div id="overlay" style="display: none;"></div>
-    <div id="result-modal" style="display: none;" role="dialog" aria-labelledby="modal-title" aria-hidden="true">
-        <h2 id="modal-title">Círculo da Performance</h2>
-        <canvas id="resultChart" width="740" height="740" style="margin: 0 auto; display: block;"></canvas>
-        <div id="improvement-section">
-            <h3>Potencial de Melhora</h3>
-            <ul id="improvement-list">
-                <!-- Lista de melhorias será gerada dinamicamente -->
-            </ul>
-        </div>
-        <p style="margin-top: 20px;">MK CARDIOSPORT</p>
-        <img src="image/alogomk.jpg" alt="Logo MK CARDIOSPORT" style="width: 100px; display: block; margin: 0 auto;">
+    <div id="result-modal" style="display: none;">
+        <h2>Círculo da Performance</h2>
+        <canvas id="resultChart" width="500" height="500"></canvas>
         <button class="button" onclick="closeModal()">Fechar</button>
-        <button class="button" onclick="downloadPDF()">Imprimir</button>
     </div>
 
     <script src="script.js"></script>
