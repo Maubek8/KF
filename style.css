@@ -1,73 +1,18 @@
-/* Global Styles */
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f9f9f9;
-    color: #333;
+/* Botões centralizados */
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
 }
 
-/* Header */
-.header {
-    text-align: center;
-    padding: 20px;
-    background-color: #4B0082;
-    color: #fff;
+/* Lista de melhorias em amarelo */
+#improvement-list li {
+    font-size: 14px;
+    color: #FFD700; /* Amarelo */
+    margin: 5px 0;
 }
 
-.header img {
-    width: 100px;
-    margin-bottom: 10px;
-}
-
-/* Container */
-.container {
-    width: 90%;
-    margin: 20px auto;
-    text-align: center;
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-}
-
-/* Input Group */
-.input-group {
-    margin: 20px 0;
-}
-
-.input-group input {
-    width: 80%;
-    max-width: 400px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-/* Buttons */
-.button {
-    padding: 10px 20px;
-    margin: 10px;
-    border: none;
-    border-radius: 5px;
-    background-color: #4B0082;
-    color: #fff;
-    cursor: pointer;
-}
-
-.button.secondary {
-    background-color: #6c757d;
-}
-
-/* Card */
-.card {
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    background-color: #f8f9fa;
-}
-
-/* Result Modal */
+/* Modal de resultados com rolagem */
 #result-modal {
     position: fixed;
     top: 50%;
@@ -80,26 +25,11 @@ body {
     width: 90%;
     max-width: 600px;
     z-index: 1000;
+    overflow-y: auto;
+    max-height: 90%; /* Limita a altura */
 }
 
-#overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    z-index: 999;
-}
-
-/* Improvement List */
-#improvement-list li {
-    font-size: 14px;
-    color: purple;
-    margin: 5px 0;
-}
-
-/* Responsive Design */
+/* Melhor visualização em dispositivos móveis */
 @media (max-width: 768px) {
     .container {
         width: 95%;
@@ -108,5 +38,10 @@ body {
     #resultChart {
         width: 100%;
         height: auto;
+    }
+
+    #result-modal {
+        width: 95%;
+        max-height: 80%;
     }
 }
