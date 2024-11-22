@@ -116,6 +116,16 @@ function generateResults() {
     document.getElementById('result-modal').style.display = 'block';
 }
 
+function downloadPDF() {
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF();
+    const canvas = document.getElementById('resultChart');
+    const imgData = canvas.toDataURL('image/png');
+    pdf.text(`Resultado do Círculo da Performance - ${document.getElementById('userName').textContent}`, 10, 10);
+    pdf.addImage(imgData, 'PNG', 10, 20, 180, 180);
+    pdf.text(`Data: ${new Date().toLocaleDateString()}`, 10, 210);
+    pdf.save('circulo_performance.pdf');
+}
 function closeModal() {
     document.getElementById('overlay').style.display = 'none';
     document.getElementById('result-modal').style.display = 'none';
