@@ -104,8 +104,13 @@ function generateResults() {
         }]
     };
 
+    // Verifica se o gráfico já existe e o destrói antes de criar um novo
+    if (window.resultChart) {
+        window.resultChart.destroy();
+    }
+
     // Renderiza o gráfico de radar
-    new Chart(ctx, {
+    window.resultChart = new Chart(ctx, {
         type: 'radar',
         data: chartData,
         options: {
@@ -115,13 +120,27 @@ function generateResults() {
                     min: 0,
                     max: 10,
                     ticks: {
-                        stepSize: 2
+                        stepSize: 2,
+                        color: '#fff', // Cor dos valores na escala radial
+                        backdropColor: 'rgba(0, 0, 0, 0)' // Remove fundo dos ticks
+                    },
+                    pointLabels: {
+                        color: '#fff', // Cor dos rótulos nos 12 pontos
+                        font: {
+                            size: 14
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.2)' // Cor das linhas da grade
+                    },
+                    angleLines: {
+                        color: 'rgba(255, 255, 255, 0.2)' // Cor das linhas radiais
                     }
                 }
             },
             plugins: {
                 legend: {
-                    display: false
+                    display: false // Esconde a legenda do dataset
                 }
             }
         }
@@ -131,9 +150,7 @@ function generateResults() {
     overlay.style.display = 'block';
     resultModal.style.display = 'block';
 }
-
-// Fecha o modal
 function closeModal() {
-    document.getElementById('overlay').style.display = 'none';
-    document.getElementById('result-modal').style.display = 'none';
+    document.getElementById('overlay').style.display = 'none'; // Oculta o fundo escuro
+    document.getElementById('result-modal').style.display = 'none'; // Oculta o modal
 }
