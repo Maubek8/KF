@@ -120,20 +120,19 @@ function handleEnterKey(event) {
         }
     }
 }
-// Gerar resultados e exibir modal
 function generateResults() {
     const chartData = topics.map(topic => scores[topic.name] || 0);
 
-    // Atualiza gráfico de radar
-    const ctx = document.getElementById('resultChart');
-    if (!ctx) {
+    // Gráfico de Radar
+    const radarCanvas = document.getElementById('resultChart');
+    if (!radarCanvas) {
         console.error("Canvas com ID 'resultChart' não encontrado.");
         return;
     }
 
-    const chartContext = ctx.getContext('2d');
+    const radarContext = radarCanvas.getContext('2d');
     if (resultChart) resultChart.destroy();
-    resultChart = new Chart(chartContext, {
+    resultChart = new Chart(radarContext, {
         type: 'radar',
         data: {
             labels: topics.map(topic => topic.name),
@@ -153,27 +152,17 @@ function generateResults() {
                     max: 10,
                     ticks: { stepSize: 2 }
                 }
-            },
-            plugins: {
-                tooltip: {
-                    callbacks: {
-                        label: function (context) {
-                            const score = context.raw;
-                            return `Potencial de Melhora: ${100 - score * 10}%`;
-                        }
-                    }
-                }
             }
         }
     });
 
-    // Gerar barras de potencial de melhora
+    // Gráfico de Barras
     const improvementBarsContainer = document.getElementById('improvement-bars');
     if (!improvementBarsContainer) {
         console.error("Elemento com ID 'improvement-bars' não encontrado.");
         return;
     }
-    improvementBarsContainer.innerHTML = '';
+    improvementBarsContainer.innerHTML = ''; // Limpa barras anteriores
     topics.forEach((topic, index) => {
         const score = chartData[index];
         const improvement = 100 - score * 10;
@@ -186,9 +175,11 @@ function generateResults() {
         improvementBarsContainer.innerHTML += improvementItem;
     });
 
+    // Exibir o modal
     document.getElementById('overlay').style.display = 'block';
     document.getElementById('result-modal').style.display = 'block';
 }
+
 
 // Fechar modal de resultados
 function closeModal() {
@@ -199,21 +190,23 @@ function closeModal() {
 // Gerar PDF dos resultados
 function downloadPDF() {
     const pdf = new jsPDF();
-    const canvas = document.getElementById('resultChart');
-    if (!canvas) {
+    const radarCanvas = document.getElementById('resultChart');
+    if (!radarCanvas) {
         console.error("Canvas com ID 'resultChart' não encontrado.");
         return;
     }
-    const imgData = canvas.toDataURL('image/png');
-    pdf.text("Círculo da Performance - Resultados", 10, 10);
-    pdf.addImage(imgData, 'PNG', 10, 20, 180, 180);
 
-    const improvementText = topics.map((topic, index) => {
+    const radarImage = radarCanvas.toDataURL('image/png');
+    pdf.text("Círculo da Performance - Resultados", 10, 10);
+    pdf.addImage(radarImage, 'PNG', 10, 20, 180, 180);
+
+    let yPosition = 220;
+    topics.forEach((topic, index) => {
         const score = scores[topic.name] || 0;
         const improvement = 100 - score * 10;
-        return `${topic.name}: ${improvement}%`;
-    }).join("\n");
-    pdf.text(improvementText, 10, 220);
+        pdf.text(`${topic.name}: ${improvement}%`, 10, yPosition);
+        yPosition += 10;
+    });
 
     pdf.save('circulo_performance.pdf');
 }
