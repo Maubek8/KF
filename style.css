@@ -1,130 +1,78 @@
-:root {
-    --primary-color: #333333;
-    --accent-color: #FFD700;
-    --text-light: #FFFFFF;
-    --text-dark: #000000;
-    --gradient: linear-gradient(135deg, #333333, #FFD700);
-}
-
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background: var(--gradient);
-    color: var(--text-dark);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
+    background-color: #f9f9f9;
+    color: #333;
 }
 
 .header {
-    width: 100%;
     text-align: center;
-    padding: 20px 0;
-    background: var(--gradient);
-    color: var(--text-light);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    background-color: #007BFF;
+    color: #fff;
 }
 
-#logo {
+.header img {
     width: 100px;
-    height: auto;
     margin-bottom: 10px;
 }
 
-h1 {
-    font-size: 2.5rem;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-}
-
 .container {
-    width: 100%;
-    max-width: 900px;
+    width: 80%;
     margin: 20px auto;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-}
-
-.card {
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 15px;
-    padding: 20px;
-    width: 100%;
-    max-width: 500px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     text-align: center;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
 }
 
 .input-group {
-    width: 100%;
-    margin-bottom: 20px;
-    text-align: left;
+    margin: 20px 0;
 }
 
-label {
-    font-weight: bold;
-    display: block;
-    margin-bottom: 8px;
-}
-
-input[type="text"],
-input[type="number"] {
-    width: 100%;
+.input-group input {
+    width: calc(100% - 20px);
+    max-width: 400px;
     padding: 10px;
-    border: 2px solid rgba(0, 0, 0, 0.1);
+    border: 1px solid #ccc;
     border-radius: 5px;
-    font-size: 1rem;
-    background: #f9f9f9;
-    transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-    outline: none;
-}
-
-input[type="text"]:focus,
-input[type="number"]:focus {
-    border-color: var(--accent-color);
-    box-shadow: 0 0 5px var(--accent-color);
 }
 
 .button {
-    padding: 10px 15px;
-    margin-top: 10px;
-    background: var(--accent-color);
-    color: var(--text-dark);
+    padding: 10px 20px;
+    margin: 10px;
     border: none;
     border-radius: 5px;
-    font-size: 1.2rem;
-    font-weight: bold;
+    background-color: #007BFF;
+    color: #fff;
     cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    width: 100%;
-    max-width: 200px;
 }
 
-.button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+.button.secondary {
+    background-color: #6c757d;
 }
 
-.secondary {
-    background: none;
-    color: var(--accent-color);
-    border: 1px solid var(--accent-color);
-    transition: background 0.3s ease, color 0.3s ease;
+.card {
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #f8f9fa;
 }
 
-.secondary:hover {
-    background: var(--accent-color);
-    color: var(--text-light);
+#result-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    width: 80%;
+    max-width: 600px;
+    z-index: 1000;
 }
 
 #overlay {
@@ -133,49 +81,12 @@ input[type="number"]:focus {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 10;
-    display: none;
-}
-
-#result-modal {
-    position: fixed;
-    top: 10%;
-    left: 50%;
-    transform: translate(-50%, 0);
-    background: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-    z-index: 20;
-    text-align: center;
-    max-height: 80%;
-    width: 90%;
-    overflow-y: auto;
-}
-
-#resultChart {
-    margin: 0 auto;
-    display: block;
-    width: 90%;
-    max-width: 500px;
-}
-
-#improvement-section {
-    margin-top: 20px;
-    width: 100%;
-    text-align: left;
-}
-
-#improvement-list {
-    list-style-type: none;
-    padding: 0;
-    margin: 10px 0;
-    text-align: left;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 999;
 }
 
 #improvement-list li {
-    font-size: 1rem;
+    font-size: 14px;
+    color: purple;
     margin: 5px 0;
-    padding-left: 10px;
 }
