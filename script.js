@@ -39,11 +39,6 @@ function startEvaluation() {
         return;
     }
 
-    // Preenche todos os valores padrão com 10
-    topics.forEach(topic => {
-        scores[topic.name] = 10; // Valor máximo inicial
-    });
-
     // Oculta a tela inicial e exibe a seção de perguntas
     document.getElementById('login-section').style.display = 'none';
     document.getElementById('question-section').style.display = 'block';
@@ -57,14 +52,15 @@ function loadQuestion() {
     const questionContainer = document.getElementById('question-container');
     const topic = topics[currentQuestion];
 
-    // Calcula o potencial de melhora
-    const potential = 100 - (scores[topic.name] * 10);
+    // Calcula o potencial de melhora se houver um valor preenchido
+    const currentScore = scores[topic.name] || 0;
+    const potential = 100 - (currentScore * 10);
 
     // Atualiza o conteúdo do contêiner de perguntas
     questionContainer.innerHTML = `
         <h3>${topic.name}</h3>
         <p>${topic.description}</p>
-        <input type="number" min="1" max="10" value="${scores[topic.name]}" 
+        <input type="number" min="1" max="10" placeholder="Insira uma nota" value="${currentScore || ''}" 
             onchange="updateScore('${topic.name}', this.value)">
         <p class="potential">Potencial de Melhora: <strong>${potential}%</strong></p>
     `;
@@ -114,7 +110,7 @@ function generateResults() {
     document.getElementById('userName').textContent = name;
 
     // Prepara os dados para o gráfico
-    const chartData = topics.map(topic => scores[topic.name]);
+    const chartData = topics.map(topic => scores[topic.name] || 0);
 
     // Obtém o contexto do canvas
     const ctx = document.getElementById('resultChart').getContext('2d');
