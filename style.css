@@ -141,6 +141,9 @@ input[type="number"]:focus {
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
     z-index: 20;
     text-align: center;
-    max-height: 80%;
-    overflow-y: auto; /* Adiciona rolagem no modal */
+    max-height: 80%; /* Limita a altura do modal */
+    width: 90%; /* Ajuste para evitar largura excessiva */
+    overflow-y: auto; /* Adiciona rolagem vertical */
+    overflow-x: hidden; /* Evita rolagem horizontal */
 }
+
