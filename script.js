@@ -14,17 +14,20 @@ const topics = [
     { name: "Tempo/Intensidade de treino", description: "Avalie sua rotina de treinos. Nota 1: Irregular ou inexistente. Nota 10: Treinos regulares e consistentes." }
 ];
 
-let currentQuestion = 0; // Índice da pergunta atual
-const scores = {}; // Armazena as notas para cada tópico
-let resultChart; // Instância do gráfico
+let currentQuestion = 0;
+const scores = {};
+let resultChart;
 
-// Configurações após o carregamento do DOM
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('start-button').addEventListener('click', startEvaluation);
     document.getElementById('overlay').addEventListener('click', closeModal);
 });
 
-// Função para iniciar a avaliação
+function toggleExplanation() {
+    const explanation = document.getElementById('explanation');
+    explanation.style.display = explanation.style.display === 'none' ? 'block' : 'none';
+}
+
 function startEvaluation() {
     const name = document.getElementById('name').value.trim();
     if (!name) {
@@ -36,26 +39,20 @@ function startEvaluation() {
     loadQuestion();
 }
 
-// Carrega a pergunta atual
 function loadQuestion() {
     const questionContainer = document.getElementById('question-container');
     const topic = topics[currentQuestion];
-
-    // Atualiza o conteúdo do contêiner de perguntas
     questionContainer.innerHTML = `
         <h3>${topic.name}</h3>
         <p>${topic.description}</p>
         <input type="number" min="1" max="10" placeholder="Insira um número de 1 a 10" 
             value="${scores[topic.name] || ''}" onchange="updateScore('${topic.name}', this.value)">
     `;
-
-    // Atualiza a visibilidade dos botões
     document.getElementById('prev-button').style.display = currentQuestion > 0 ? 'block' : 'none';
     document.getElementById('next-button').style.display = currentQuestion < topics.length - 1 ? 'block' : 'none';
     document.getElementById('result-button').style.display = currentQuestion === topics.length - 1 ? 'block' : 'none';
 }
 
-// Atualiza a pontuação para o tópico atual
 function updateScore(topic, value) {
     const parsedValue = parseInt(value, 10);
     if (parsedValue < 1 || parsedValue > 10) {
@@ -65,7 +62,6 @@ function updateScore(topic, value) {
     scores[topic] = parsedValue;
 }
 
-// Navegação para próxima pergunta
 function nextQuestion() {
     if (currentQuestion < topics.length - 1) {
         currentQuestion++;
@@ -73,7 +69,6 @@ function nextQuestion() {
     }
 }
 
-// Navegação para pergunta anterior
 function prevQuestion() {
     if (currentQuestion > 0) {
         currentQuestion--;
@@ -81,31 +76,20 @@ function prevQuestion() {
     }
 }
 
-// Gera os resultados e exibe o gráfico de radar
 function generateResults() {
     const name = document.getElementById('name').value.trim();
     if (!name) {
         alert("Por favor, insira seu nome.");
         return;
     }
-
-    // Atualiza o nome do usuário no modal
     document.getElementById('userName').textContent = name;
-
     const chartData = topics.map(topic => scores[topic.name] || 0);
-    const potentialImprovement = chartData.map(score => 100 - score * 10);
-
     const ctx = document.getElementById('resultChart').getContext('2d');
-
-    if (resultChart) {
-        resultChart.destroy();
-    }
-
-    // Cria o gráfico de radar com potencial de melhora
+    if (resultChart) resultChart.destroy();
     resultChart = new Chart(ctx, {
         type: 'radar',
         data: {
-            labels: topics.map((topic, index) => `${topic.name} (${potentialImprovement[index]}% Potencial)`),
+            labels: topics.map(topic => topic.name),
             datasets: [{
                 label: 'Círculo da Performance',
                 data: chartData,
@@ -121,28 +105,17 @@ function generateResults() {
                     beginAtZero: true,
                     min: 0,
                     max: 10,
-                    ticks: {
-                        stepSize: 2,
-                        color: '#fff',
-                        backdropColor: 'rgba(0, 0, 0, 0)'
-                    },
-                    grid: {
-                        color: 'rgba(255, 255, 255, 0.2)'
-                    }
+                    ticks: { stepSize: 2, color: '#fff' },
+                    grid: { color: 'rgba(255, 255, 255, 0.2)' }
                 }
             },
-            plugins: {
-                legend: { display: false }
-            }
+            plugins: { legend: { display: false } }
         }
     });
-
-    // Exibe o modal com o gráfico
     document.getElementById('overlay').style.display = 'block';
     document.getElementById('result-modal').style.display = 'block';
 }
 
-// Fecha o modal de resultados
 function closeModal() {
     document.getElementById('overlay').style.display = 'none';
     document.getElementById('result-modal').style.display = 'none';
