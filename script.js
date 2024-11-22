@@ -200,10 +200,11 @@ function downloadPDF() {
 
     if (!radarCanvas) {
         console.error("Canvas com ID 'resultChart' não encontrado.");
+        alert("Erro ao gerar o PDF. Por favor, tente novamente.");
         return;
     }
 
-    // Adiciona o gráfico de radar
+    // Adiciona o gráfico de radar ao PDF
     const radarImage = radarCanvas.toDataURL('image/png');
     pdf.text("Círculo da Performance - Resultados", 10, 10);
     pdf.addImage(radarImage, 'PNG', 10, 20, 180, 180);
