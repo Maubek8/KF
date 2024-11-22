@@ -44,11 +44,20 @@
         <h2>Círculo da Performance</h2>
         <h3>MK - CARDIOSPORT</h3>
         <img src="image/alogomk.jpg" alt="Logo MK CARDIOSPORT" style="width: 100px; display: block; margin: 10px auto;">
+        
+        <!-- Gráfico de radar -->
         <canvas id="resultChart" width="500" height="500" style="margin: 20px auto;"></canvas>
+
+        <!-- Bloco para as barras de potencial de melhora -->
+        <div id="improvement-bars" class="improvement-bars" style="margin-top: 20px;">
+            <!-- Barras geradas dinamicamente aparecerão aqui -->
+        </div>
+
         <div id="improvement-section" style="text-align: center; margin-top: 20px;">
             <h3>Potencial de Melhora</h3>
             <ul id="improvement-list" style="list-style-type: none; padding: 0;"></ul>
         </div>
+        
         <button class="button" onclick="closeModal()">Fechar</button>
         <button class="button" onclick="downloadPDF()">Imprimir</button>
     </div>
