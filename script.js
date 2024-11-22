@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const nextButton = document.getElementById('next-button');
     const prevButton = document.getElementById('prev-button');
     const resultButton = document.getElementById('result-button');
+    const questionInput = document.getElementById('question-input');
 
     // Tópicos para avaliação
     const topics = [
@@ -38,6 +39,18 @@ document.addEventListener('DOMContentLoaded', () => {
     prevButton.addEventListener('click', prevQuestion);
     resultButton.addEventListener('click', generateResults);
 
+    // Lógica para avançar com a tecla Enter
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            if (document.getElementById('question-section').classList.contains('hidden')) return;
+            if (currentQuestion < topics.length - 1) {
+                nextQuestion();
+            } else {
+                generateResults();
+            }
+        }
+    });
+
     // Alternar explicação
     function toggleExplanation() {
         const explanation = document.getElementById('explanation');
@@ -63,9 +76,10 @@ document.addEventListener('DOMContentLoaded', () => {
         questionContainer.innerHTML = `
             <h3>${topic.name}</h3>
             <p>${topic.description}</p>
-            <input type="number" min="1" max="10" placeholder="Insira um número de 1 a 10"
+            <input type="number" id="question-input" min="1" max="10" placeholder="Insira um número de 1 a 10"
                 value="${scores[topic.name] || ''}" onchange="updateScore('${topic.name}', this.value)">
         `;
+        document.getElementById('question-input').focus();
 
         // Atualizar visibilidade dos botões
         prevButton.classList.toggle('hidden', currentQuestion === 0);
