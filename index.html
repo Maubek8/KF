@@ -19,7 +19,7 @@
             <button class="button secondary" onclick="toggleExplanation()">O que é o Círculo da Performance?</button>
             <div id="explanation" style="display: none;">
                 <h3>O que é o Círculo da Performance?</h3>
-                <p>Ferramenta para avaliar aspectos fundamentais da sua saúde e desempenho.</p>
+                <p>Avalie 12 aspectos essenciais de sua saúde e bem-estar, fornecendo uma nota de 1 a 10.</p>
             </div>
             <div class="input-group">
                 <label for="name">Nome completo:</label>
@@ -31,8 +31,8 @@
         <section class="card" id="question-section" style="display: none;">
             <div id="question-container"></div>
             <div class="button-group">
-                <button class="button" id="next-button" onclick="nextQuestion()">Próxima</button>
                 <button class="button" id="prev-button" onclick="prevQuestion()" style="display: none;">Anterior</button>
+                <button class="button" id="next-button" onclick="nextQuestion()">Próxima</button>
                 <button class="button" id="result-button" onclick="generateResults()" style="display: none;">Visualizar Resultados</button>
             </div>
         </section>
@@ -41,8 +41,15 @@
     <div id="overlay" style="display: none;"></div>
     <div id="result-modal" style="display: none;">
         <h2>Círculo da Performance</h2>
-        <canvas id="resultChart" width="500" height="500"></canvas>
+        <h3>MK - CARDIOSPORT</h3>
+        <img src="image/alogomk.jpg" alt="Logo MK CARDIOSPORT" style="width: 100px; display: block; margin: 10px auto;">
+        <canvas id="resultChart" width="500" height="500" style="margin: 20px auto;"></canvas>
+        <div id="improvement-section" style="text-align: center; margin-top: 20px;">
+            <h3>Potencial de Melhora</h3>
+            <ul id="improvement-list" style="list-style-type: none; padding: 0;"></ul>
+        </div>
         <button class="button" onclick="closeModal()">Fechar</button>
+        <button class="button" onclick="downloadPDF()">Imprimir</button>
     </div>
 
     <script src="script.js"></script>
