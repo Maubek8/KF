@@ -195,12 +195,14 @@ function closeModal() {
 
 // Gerar PDF dos resultados
 function downloadPDF() {
+    console.log("Tentando gerar o PDF...");
     const pdf = new jsPDF();
     const radarCanvas = document.getElementById('resultChart');
 
-    if (!radarCanvas) {
-        console.error("Canvas com ID 'resultChart' não encontrado.");
-        alert("Erro ao gerar o PDF. Por favor, tente novamente.");
+    // Verifica se o gráfico de radar existe
+    if (!radarCanvas || !radarCanvas.getContext) {
+        console.error("Canvas do gráfico de radar não encontrado ou inválido.");
+        alert("Erro: Gráfico de radar não encontrado.");
         return;
     }
 
@@ -209,11 +211,11 @@ function downloadPDF() {
     pdf.text("Círculo da Performance - Resultados", 10, 10);
     pdf.addImage(radarImage, 'PNG', 10, 20, 180, 180);
 
-    // Adiciona as barras de potencial de melhora
+    // Adiciona barras de potencial de melhoria ao PDF
     const improvementBarsContainer = document.getElementById('improvement-bars');
     let yPosition = 220;
 
-    if (improvementBarsContainer) {
+    if (improvementBarsContainer && improvementBarsContainer.children.length) {
         const improvementItems = improvementBarsContainer.querySelectorAll('.improvement-item');
         improvementItems.forEach(item => {
             const text = item.querySelector('p').innerText;
@@ -221,9 +223,10 @@ function downloadPDF() {
             yPosition += 10;
         });
     } else {
-        console.error("Elemento com ID 'improvement-bars' não encontrado.");
+        console.warn("As barras de melhoria não foram encontradas ou estão vazias.");
     }
 
     // Salva o PDF
+    console.log("Salvando o PDF...");
     pdf.save('circulo_performance.pdf');
 }
