@@ -1,11 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
     const startButton = document.getElementById('start-button');
     const overlay = document.getElementById('overlay');
+    const infoButton = document.querySelector('.button.secondary');
     const resultButton = document.getElementById('result-button');
 
     // Adicionar eventos aos botões
     if (startButton) {
         startButton.addEventListener('click', startEvaluation);
+    }
+
+    if (infoButton) {
+        infoButton.addEventListener('click', toggleExplanation);
     }
 
     if (overlay) {
