@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const nextButton = document.getElementById('next-button');
     const prevButton = document.getElementById('prev-button');
     const resultButton = document.getElementById('result-button');
-    const questionInput = document.getElementById('question-input');
 
     // Tópicos para avaliação
     const topics = [
@@ -77,9 +76,11 @@ document.addEventListener('DOMContentLoaded', () => {
             <h3>${topic.name}</h3>
             <p>${topic.description}</p>
             <input type="number" id="question-input" min="1" max="10" placeholder="Insira um número de 1 a 10"
-                value="${scores[topic.name] || ''}" onchange="updateScore('${topic.name}', this.value)">
+                value="${scores[topic.name] || ''}">
         `;
-        document.getElementById('question-input').focus();
+        const questionInput = document.getElementById('question-input');
+        questionInput.focus();
+        questionInput.addEventListener('change', () => updateScore(topic.name, questionInput.value));
 
         // Atualizar visibilidade dos botões
         prevButton.classList.toggle('hidden', currentQuestion === 0);
@@ -88,14 +89,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Atualizar pontuação
-    window.updateScore = function (topic, value) {
+    function updateScore(topic, value) {
         const parsedValue = parseInt(value, 10);
-        if (parsedValue < 1 || parsedValue > 10) {
+        if (isNaN(parsedValue) || parsedValue < 1 || parsedValue > 10) {
             alert("Por favor, insira um valor entre 1 e 10.");
             return;
         }
         scores[topic] = parsedValue;
-    };
+    }
 
     // Navegar entre perguntas
     function nextQuestion() {
@@ -111,82 +112,71 @@ document.addEventListener('DOMContentLoaded', () => {
             loadQuestion();
         }
     }
-});
-// Gerar resultados
-function generateResults() {
-    const chartData = topics.map(topic => scores[topic.name] || 0);
 
-    // Configurar gráfico de radar
-    const radarCanvas = document.getElementById('resultChart');
-    if (!radarCanvas) {
-        console.error("Canvas do gráfico não encontrado.");
-        return;
-    }
-    const radarContext = radarCanvas.getContext('2d');
-    if (resultChart) resultChart.destroy();
+    // Gerar resultados
+    function generateResults() {
+        const chartData = topics.map(topic => scores[topic.name] || 0);
 
-    resultChart = new Chart(radarContext, {
-        type: 'radar',
-        data: {
-            labels: topics.map(topic => topic.name),
-            datasets: [
-                {
-                    label: 'Desempenho Atual',
-                    data: chartData,
-                    backgroundColor: 'rgba(255, 215, 0, 0.4)',
-                    borderColor: 'rgba(255, 215, 0, 1)'
-                }
-            ]
-        },
-        options: {
-            scales: {
-                r: {
-                    beginAtZero: true,
-                    max: 10,
-                    ticks: { stepSize: 2 }
+        // Configurar gráfico de radar
+        const radarCanvas = document.getElementById('resultChart');
+        if (!radarCanvas) {
+            console.error("Canvas do gráfico não encontrado.");
+            return;
+        }
+        const radarContext = radarCanvas.getContext('2d');
+        if (resultChart) resultChart.destroy();
+
+        resultChart = new Chart(radarContext, {
+            type: 'radar',
+            data: {
+                labels: topics.map(topic => topic.name),
+                datasets: [
+                    {
+                        label: 'Desempenho Atual',
+                        data: chartData,
+                        backgroundColor: 'rgba(255, 215, 0, 0.4)',
+                        borderColor: 'rgba(255, 215, 0, 1)'
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        max: 10,
+                        ticks: { stepSize: 2 }
+                    }
                 }
             }
-        }
-    });
-
-    // Exibir modal de resultados
-    document.getElementById('overlay').classList.remove('hidden');
-    document.getElementById('result-modal').classList.remove('hidden');
-}
-
-// Fechar modal
-function closeModal() {
-    document.getElementById('overlay').classList.add('hidden');
-    document.getElementById('result-modal').classList.add('hidden');
-}
-
-// Gerar PDF
-function downloadPDF() {
-    const pdf = new jsPDF();
-    const radarCanvas = document.getElementById('resultChart');
-
-    if (!radarCanvas) {
-        console.error("Canvas não encontrado para gerar o PDF.");
-        return;
-    }
-
-    // Adicionar gráfico de radar ao PDF
-    const radarImage = radarCanvas.toDataURL('image/png');
-    pdf.text("Círculo da Performance - Resultados", 10, 10);
-    pdf.addImage(radarImage, 'PNG', 10, 20, 180, 180);
-
-    // Adicionar melhorias
-    const improvementBars = document.getElementById('improvement-bars');
-    let yPosition = 220;
-    if (improvementBars && improvementBars.children.length > 0) {
-        const items = improvementBars.querySelectorAll('.improvement-item');
-        items.forEach(item => {
-            const text = item.querySelector('p').innerText;
-            pdf.text(text, 10, yPosition);
-            yPosition += 10;
         });
+
+        // Exibir modal de resultados
+        document.getElementById('overlay').classList.remove('hidden');
+        document.getElementById('result-modal').classList.remove('hidden');
     }
 
-    // Salvar PDF
-    pdf.save('resultados.pdf');
-}
+    // Fechar modal
+    function closeModal() {
+        document.getElementById('overlay').classList.add('hidden');
+        document.getElementById('result-modal').classList.add('hidden');
+    }
+
+    // Gerar PDF
+    function downloadPDF() {
+        const pdf = new jsPDF();
+        const radarCanvas = document.getElementById('resultChart');
+
+        if (!radarCanvas) {
+            console.error("Canvas não encontrado para gerar o PDF.");
+            return;
+        }
+
+        // Adicionar gráfico de radar ao PDF
+        const radarImage = radarCanvas.toDataURL('image/png');
+        pdf.text("Círculo da Performance - Resultados", 10, 10);
+        pdf.addImage(radarImage, 'PNG', 10, 20, 180, 180);
+
+        // Salvar PDF
+        pdf.save('resultados.pdf');
+    }
+});
