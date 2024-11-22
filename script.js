@@ -156,24 +156,24 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('result-modal').classList.add('hidden');
     }
 
-  function downloadPDF() {
-    // Obter os dados do gráfico de radar e das barras de melhoria
+ function downloadPDF() {
+    // Obter os elementos do gráfico de radar e das barras de melhoria
     const radarCanvas = document.getElementById('resultChart');
-    const improvementBars = document.getElementById('improvement-bars').innerHTML;
+    const improvementBars = document.getElementById('improvement-bars');
 
-    if (!radarCanvas) {
-        alert("Gráfico de radar não encontrado.");
+    if (!radarCanvas || !improvementBars) {
+        alert("Os resultados não estão disponíveis para impressão.");
         return;
     }
 
-    // Criar nova janela para impressão
+    // Criar uma nova janela com os resultados
     const printWindow = window.open('', '_blank');
     if (!printWindow) {
-        alert("Falha ao abrir a janela de impressão.");
+        alert("Não foi possível abrir a janela de impressão.");
         return;
     }
 
-    // HTML básico para a janela de impressão
+    // HTML da página de impressão
     const htmlContent = `
         <!DOCTYPE html>
         <html lang="pt-BR">
@@ -184,13 +184,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 body {
                     font-family: Arial, sans-serif;
                     margin: 20px;
+                    text-align: center;
                 }
                 h2, h3 {
-                    text-align: center;
+                    margin-bottom: 20px;
                 }
                 canvas {
                     display: block;
-                    margin: 20px auto;
+                    margin: 0 auto 20px;
                 }
                 .improvement-item {
                     margin: 10px 0;
@@ -202,29 +203,25 @@ document.addEventListener('DOMContentLoaded', () => {
         </head>
         <body>
             <h2>Resultados do Círculo da Performance</h2>
-            <h3>MK - CARDIOSPORT</h3>
             <canvas id="printChart" width="500" height="500"></canvas>
             <div>
                 <h3>Potencial de Melhora</h3>
-                ${improvementBars}
+                ${improvementBars.innerHTML}
             </div>
             <script>
-                // Renderizar o gráfico de radar na janela de impressão
+                // Clonar o gráfico de radar na nova janela
                 const printCanvas = document.getElementById('printChart');
                 const printContext = printCanvas.getContext('2d');
-                const chartData = ${JSON.stringify(radarCanvas.getContext('2d').getImageData(0, 0, radarCanvas.width, radarCanvas.height))};
-
-                // Desenhar imagem do gráfico na nova página
-                printContext.putImageData(new ImageData(chartData.data, chartData.width, chartData.height), 0, 0);
-
-                // Acionar a impressão
+                const originalCanvas = opener.document.getElementById('resultChart');
+                printContext.drawImage(originalCanvas, 0, 0);
+                // Iniciar a impressão
                 window.onload = () => window.print();
             </script>
         </body>
         </html>
     `;
 
-    // Adicionar o conteúdo e carregar a nova janela
+    // Adicionar o conteúdo HTML à nova janela
     printWindow.document.open();
     printWindow.document.write(htmlContent);
     printWindow.document.close();
