@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const scores = {};
     let radarChart;
 
+    // Botões e eventos principais
     startButton.addEventListener('click', startEvaluation);
     infoButton.addEventListener('click', toggleExplanation);
     closeButton.addEventListener('click', closeModal);
@@ -134,13 +135,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        const improvementBarsContainer = document.getElementById('improvement-bars');
-        improvementBarsContainer.innerHTML = '';
+        const improvementBars = document.getElementById('improvement-bars');
+        improvementBars.innerHTML = '';
         topics.forEach((topic, index) => {
             const score = chartData[index];
             const improvement = 100 - score * 10;
-            improvementBarsContainer.innerHTML += `
-                <div class="improvement-item">
+            improvementBars.innerHTML += `
+                <div>
                     <p>${topic.name}: ${improvement}%</p>
                     <progress value="${improvement}" max="100"></progress>
                 </div>`;
@@ -153,5 +154,24 @@ document.addEventListener('DOMContentLoaded', () => {
     function closeModal() {
         document.getElementById('overlay').classList.add('hidden');
         document.getElementById('result-modal').classList.add('hidden');
+    }
+
+    function downloadPDF() {
+        const pdf = new jsPDF();
+        const radarCanvas = document.getElementById('resultChart');
+        if (!radarCanvas) return;
+
+        pdf.text("Círculo da Performance - Resultados", 10, 10);
+        pdf.addImage(radarCanvas.toDataURL('image/png'), 'PNG', 10, 20, 180, 180);
+
+        const improvementBars = document.getElementById('improvement-bars').children;
+        let yPosition = 220;
+        for (let item of improvementBars) {
+            const text = item.querySelector('p').innerText;
+            pdf.text(text, 10, yPosition);
+            yPosition += 10;
+        }
+
+        pdf.save('resultados.pdf');
     }
 });
