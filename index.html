@@ -48,21 +48,21 @@
     </main>
 
     <!-- Modal de Resultados -->
-   <div id="result-modal" style="display: none;" role="dialog" aria-labelledby="modal-title" aria-hidden="true">
-    <h2 id="modal-title">Círculo da Performance</h2>
-    <canvas id="resultChart" width="740" height="740" style="margin: 0 auto; display: block;"></canvas>
-    <div id="improvement-section">
-        <h3>Potencial de Melhora</h3>
-        <ul id="improvement-list">
-            <!-- Lista de melhorias será gerada dinamicamente -->
-        </ul>
+    <div id="overlay" style="display: none;"></div>
+    <div id="result-modal" style="display: none;" role="dialog" aria-labelledby="modal-title" aria-hidden="true">
+        <h2 id="modal-title">Círculo da Performance</h2>
+        <canvas id="resultChart" width="740" height="740" style="margin: 0 auto; display: block;"></canvas>
+        <div id="improvement-section">
+            <h3>Potencial de Melhora</h3>
+            <ul id="improvement-list">
+                <!-- Lista de melhorias será gerada dinamicamente -->
+            </ul>
+        </div>
+        <p style="margin-top: 20px;">MK CARDIOSPORT</p>
+        <img src="image/alogomk.jpg" alt="Logo MK CARDIOSPORT" style="width: 100px; display: block; margin: 0 auto;">
+        <button class="button" onclick="closeModal()">Fechar</button>
+        <button class="button" onclick="downloadPDF()">Imprimir</button>
     </div>
-    <p style="margin-top: 20px;">MK CARDIOSPORT</p>
-    <img src="image/alogomk.jpg" alt="Logo MK CARDIOSPORT" style="width: 100px; display: block; margin: 0 auto;">
-    <button class="button" onclick="closeModal()">Fechar</button>
-    <button class="button" onclick="downloadPDF()">Imprimir</button>
-</div>
-
 
     <script src="script.js"></script>
 </body>
