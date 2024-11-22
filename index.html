@@ -9,7 +9,7 @@
     <title>Círculo da Performance</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="image/favicon.ico" type="image/x-icon">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="assets/libs/chart.js"></script>
 </head>
 <body>
     <div class="header">
@@ -17,29 +17,24 @@
         <h1>Círculo da Performance</h1>
     </div>
 
-    <div class="container">
-        <div class="card" id="login-section">
+    <main class="container">
+        <!-- Tela Inicial -->
+        <section class="card" id="login-section">
             <button class="button secondary" onclick="toggleExplanation()">O que é o Círculo da Performance?</button>
             <div id="explanation" style="display: none;">
-                <p><strong>O que é o Círculo da Performance?</strong></p>
-                <p>
-                    É uma ferramenta interativa que avalia aspectos fundamentais da sua saúde, bem-estar e desempenho. 
-                    Responda cada pergunta com um número de 1 a 10, onde 1 indica menor satisfação ou desempenho, 
-                    e 10 representa o máximo de satisfação ou desempenho.
-                </p>
-                <p>
-                    Preencha seu nome completo para começar a avaliação. Após responder todas as perguntas, você poderá 
-                    visualizar seus resultados em um gráfico.
-                </p>
+                <h3>O que é o Círculo da Performance?</h3>
+                <p>É uma ferramenta interativa que avalia aspectos fundamentais da sua saúde, bem-estar e desempenho.</p>
+                <p>Responda cada pergunta com uma nota de 1 a 10, onde 1 indica menor satisfação ou desempenho e 10 representa o máximo.</p>
             </div>
             <div class="input-group">
                 <label for="name">Nome completo:</label>
                 <input type="text" id="name" placeholder="Digite seu nome completo" required>
             </div>
             <button class="button" id="start-button">Iniciar Avaliação</button>
-        </div>
+        </section>
 
-        <div class="card" id="question-section" style="display: none;">
+        <!-- Perguntas -->
+        <section class="card" id="question-section" style="display: none;">
             <div id="question-container">
                 <!-- Perguntas dinâmicas -->
             </div>
@@ -48,15 +43,15 @@
                 <button class="button" id="next-button" onclick="nextQuestion()">Próxima</button>
                 <button class="button" id="result-button" onclick="generateResults()" style="display: none;">Visualizar Resultados</button>
             </div>
-        </div>
-    </div>
+        </section>
+    </main>
 
+    <!-- Modal de Resultados -->
     <div id="overlay" style="display: none;"></div>
-
-    <div id="result-modal" style="display: none;">
-        <h2>Resultado de <span id="userName"></span></h2>
+    <div id="result-modal" style="display: none;" role="dialog" aria-labelledby="modal-title" aria-hidden="true">
+        <h2 id="modal-title">Resultado de <span id="userName"></span></h2>
         <canvas id="resultChart" width="740" height="740"></canvas>
-        <p>Análise do Gráfico: As áreas mais próximas do centro representam pontos a serem otimizados. Quanto mais fora do centro, melhor o desempenho.</p>
+        <p>Análise: As áreas mais próximas do centro representam pontos a serem otimizados. Quanto mais afastadas, melhor o desempenho.</p>
         <button class="button" onclick="closeModal()">Fechar</button>
     </div>
 
