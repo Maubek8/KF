@@ -214,3 +214,6 @@ canvas {
         height: auto;
     }
 }
+.hidden {
+    display: none;
+}
