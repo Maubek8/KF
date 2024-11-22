@@ -53,29 +53,8 @@ body {
     background-color: #f8f9fa; /* Fundo leve */
 }
 
-/* Classe .hidden para elementos inicialmente ocultos */
 .hidden {
-    display: none;
-}
-
-/* Grupo de Input */
-.input-group {
-    margin: 20px 0;
-}
-
-.input-group label {
-    display: block;
-    margin-bottom: 10px;
-    font-weight: bold;
-}
-
-.input-group input {
-    width: calc(100% - 20px);
-    max-width: 400px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
+    display: none !important;
 }
 
 /* Botões */
@@ -101,21 +80,6 @@ body {
     background-color: #e6c200; /* Amarelo mais escuro */
 }
 
-.button:active {
-    background-color: #d1a800;
-}
-
-.button:focus {
-    outline: 2px solid #FFD700;
-    outline-offset: 2px;
-}
-
-.button-group {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-}
-
 /* Modal */
 #result-modal {
     position: fixed;
@@ -132,13 +96,6 @@ body {
     overflow-y: auto;
     max-height: 80%;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    transition: opacity 0.3s ease, transform 0.3s ease;
-    opacity: 0;
-}
-
-#result-modal.show {
-    opacity: 1;
-    transform: translate(-50%, 10%);
 }
 
 #overlay {
@@ -149,92 +106,4 @@ body {
     height: 100%;
     background: rgba(0, 0, 0, 0.7);
     z-index: 999;
-}
-
-/* Estilos do Gráfico */
-canvas {
-    margin: 20px auto;
-    display: block;
-    width: 100%;
-    height: auto;
-}
-
-/* Estilos para as Barras de Potencial de Melhora */
-.improvement-bars {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin-top: 20px;
-}
-
-.improvement-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.improvement-item p {
-    margin: 0;
-    font-size: 14px;
-    flex: 1;
-    color: #333; /* Texto cinza */
-}
-
-.improvement-item progress {
-    flex: 2;
-    height: 20px;
-    border: none;
-    border-radius: 10px;
-    overflow: hidden;
-    background-color: #f3f3f3;
-    transition: width 0.3s ease;
-}
-
-.improvement-item progress::-webkit-progress-bar {
-    background-color: #f3f3f3;
-    border-radius: 10px;
-}
-
-.improvement-item progress::-webkit-progress-value {
-    background-color: #FFD700; /* Amarelo */
-    border-radius: 10px;
-}
-
-.improvement-item progress::-moz-progress-bar {
-    background-color: #FFD700; /* Amarelo */
-}
-
-/* Responsividade */
-@media (max-width: 768px) {
-    .container {
-        width: 95%;
-        padding: 15px;
-    }
-
-    .header img {
-        width: 60px; /* Reduz tamanho da logo */
-    }
-
-    .header h1 {
-        font-size: 20px;
-    }
-
-    .header .powered-by {
-        font-size: 12px;
-    }
-
-    .button {
-        font-size: 12px;
-        padding: 8px 16px;
-    }
-
-    #result-modal {
-        width: 95%;
-        max-height: 80%;
-    }
-
-    canvas {
-        max-width: 100%;
-        height: auto;
-    }
 }
