@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const startButton = document.getElementById('start-button');
     const overlay = document.getElementById('overlay');
-    const infoButton = document.querySelector('.button.secondary'); // Seleciona botão de Info
+    const infoButton = document.querySelector('.button.secondary'); // Botão Info
     const resultButton = document.getElementById('result-button');
 
     // Adicionar eventos aos botões
@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (infoButton) {
-        infoButton.addEventListener('click', toggleExplanation); // Corrige conexão do botão Info
+        infoButton.addEventListener('click', toggleExplanation);
     }
 
     if (overlay) {
@@ -45,6 +45,10 @@ let resultChart; // Referência ao gráfico de radar
 // Mostrar/Esconder explicação
 function toggleExplanation() {
     const explanation = document.getElementById('explanation');
+    if (!explanation) {
+        console.error("Elemento com ID 'explanation' não encontrado.");
+        return;
+    }
     explanation.style.display = explanation.style.display === 'none' ? 'block' : 'none';
 }
 
@@ -55,7 +59,6 @@ function startEvaluation() {
         alert("Por favor, insira seu nome completo.");
         return;
     }
-    // Esconde a seção inicial e mostra a primeira pergunta
     document.getElementById('login-section').style.display = 'none';
     document.getElementById('question-section').style.display = 'block';
     loadQuestion();
@@ -122,10 +125,15 @@ function handleEnterKey(event) {
 function generateResults() {
     const chartData = topics.map(topic => scores[topic.name] || 0);
 
-    // Atualiza gráfico de radar
-    const ctx = document.getElementById('resultChart').getContext('2d');
+    const ctx = document.getElementById('resultChart');
+    if (!ctx) {
+        console.error("Canvas com ID 'resultChart' não encontrado.");
+        return;
+    }
+
+    const chartContext = ctx.getContext('2d');
     if (resultChart) resultChart.destroy();
-    resultChart = new Chart(ctx, {
+    resultChart = new Chart(chartContext, {
         type: 'radar',
         data: {
             labels: topics.map(topic => topic.name),
@@ -140,7 +148,6 @@ function generateResults() {
         },
         options: {
             plugins: {
-                legend: { display: false },
                 tooltip: {
                     callbacks: {
                         label: function (context) {
@@ -160,7 +167,20 @@ function generateResults() {
         }
     });
 
-    // Exibe modal
+    const improvementBarsContainer = document.getElementById('improvement-bars');
+    improvementBarsContainer.innerHTML = '';
+    topics.forEach((topic, index) => {
+        const score = chartData[index];
+        const improvement = 100 - score * 10;
+        const improvementItem = `
+            <div class="improvement-item">
+                <p>${topic.name}</p>
+                <progress value="${improvement}" max="100"></progress>
+            </div>
+        `;
+        improvementBarsContainer.innerHTML += improvementItem;
+    });
+
     document.getElementById('overlay').style.display = 'block';
     document.getElementById('result-modal').style.display = 'block';
 }
@@ -175,6 +195,10 @@ function closeModal() {
 function downloadPDF() {
     const pdf = new jsPDF();
     const canvas = document.getElementById('resultChart');
+    if (!canvas) {
+        console.error("Canvas com ID 'resultChart' não encontrado.");
+        return;
+    }
     const imgData = canvas.toDataURL('image/png');
     pdf.text("Círculo da Performance - Resultados", 10, 10);
     pdf.addImage(imgData, 'PNG', 10, 20, 180, 180);
