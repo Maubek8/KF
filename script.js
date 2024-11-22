@@ -14,18 +14,22 @@ const topics = [
     { name: "Tempo/Intensidade de treino", description: "Avalie sua rotina de treinos. Nota 1: Irregular ou inexistente. Nota 10: Treinos regulares e consistentes." }
 ];
 
+// Variáveis globais
 let currentQuestion = 0; // Índice da pergunta atual
 const scores = {}; // Armazena as notas para cada tópico
 let resultChart; // Armazena a instância do gráfico
 
-// Adiciona eventos após o DOM estar carregado
+// Eventos configurados após o carregamento do DOM
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('start-button').addEventListener('click', startEvaluation);
-    document.getElementById('next-button').addEventListener('click', nextQuestion);
-    document.getElementById('prev-button').addEventListener('click', prevQuestion);
-    document.getElementById('result-button').addEventListener('click', generateResults);
     document.getElementById('overlay').addEventListener('click', closeModal); // Fecha ao clicar no fundo escuro
 });
+
+// Função para exibir ou ocultar a explicação
+function toggleExplanation() {
+    const explanation = document.getElementById('explanation');
+    explanation.style.display = explanation.style.display === 'none' ? 'block' : 'none';
+}
 
 // Inicia a avaliação e mostra a primeira pergunta
 function startEvaluation() {
@@ -34,8 +38,12 @@ function startEvaluation() {
         alert("Por favor, insira seu nome completo.");
         return;
     }
+
+    // Oculta a tela inicial e exibe a seção de perguntas
     document.getElementById('login-section').style.display = 'none';
     document.getElementById('question-section').style.display = 'block';
+
+    // Carrega a primeira pergunta
     loadQuestion();
 }
 
@@ -44,13 +52,15 @@ function loadQuestion() {
     const questionContainer = document.getElementById('question-container');
     const topic = topics[currentQuestion];
 
+    // Atualiza o conteúdo do contêiner de perguntas
     questionContainer.innerHTML = `
         <h3>${topic.name}</h3>
         <p>${topic.description}</p>
-        <input type="number" min="1" max="10" value="${scores[topic.name] || 5}" onchange="updateScore('${topic.name}', this.value)">
+        <input type="number" min="1" max="10" value="${scores[topic.name] || 5}" 
+            onchange="updateScore('${topic.name}', this.value)">
     `;
 
-    // Mostra ou oculta os botões de navegação
+    // Atualiza a visibilidade dos botões
     document.getElementById('prev-button').style.display = currentQuestion > 0 ? 'block' : 'none';
     document.getElementById('next-button').style.display = currentQuestion < topics.length - 1 ? 'block' : 'none';
     document.getElementById('result-button').style.display = currentQuestion === topics.length - 1 ? 'block' : 'none';
@@ -58,49 +68,66 @@ function loadQuestion() {
 
 // Atualiza a pontuação para o tópico atual
 function updateScore(topic, value) {
-    scores[topic] = Number(value);
+    const parsedValue = parseInt(value, 10);
+    if (parsedValue < 1 || parsedValue > 10) {
+        alert("Por favor, insira um valor entre 1 e 10.");
+        return;
+    }
+    scores[topic] = parsedValue;
 }
 
 // Avança para a próxima pergunta
 function nextQuestion() {
-    currentQuestion++;
-    loadQuestion();
+    if (currentQuestion < topics.length - 1) {
+        currentQuestion++;
+        loadQuestion();
+    }
 }
 
 // Retorna para a pergunta anterior
 function prevQuestion() {
-    currentQuestion--;
-    loadQuestion();
+    if (currentQuestion > 0) {
+        currentQuestion--;
+        loadQuestion();
+    }
 }
 
+// Gera os resultados e exibe o gráfico de radar
 function generateResults() {
     const name = document.getElementById('name').value.trim();
     if (!name) {
-        alert("Por favor, insira seu nome completo.");
+        alert("Por favor, insira seu nome.");
         return;
     }
 
-    const ctx = document.getElementById('resultChart').getContext('2d');
-    const chartData = {
-        labels: topics.map(topic => topic.name),
-        datasets: [{
-            label: 'Círculo da Performance',
-            data: topics.map(topic => scores[topic.name] || 0),
-            backgroundColor: 'rgba(255, 215, 0, 0.4)', // Cor preenchida do radar
-            borderColor: 'rgba(255, 215, 0, 1)', // Cor da borda
-            pointBackgroundColor: 'rgba(255, 215, 0, 1)',
-            pointBorderColor: '#fff',
-        }]
-    };
+    // Atualiza o nome do usuário no modal
+    document.getElementById('userName').textContent = name;
 
-    // Destroi o gráfico existente antes de criar um novo
+    // Prepara os dados para o gráfico
+    const chartData = topics.map(topic => scores[topic.name] || 0);
+
+    // Obtém o contexto do canvas
+    const ctx = document.getElementById('resultChart').getContext('2d');
+
+    // Destroi o gráfico existente, se houver, para evitar conflitos
     if (resultChart) {
         resultChart.destroy();
     }
 
+    // Cria o gráfico de radar
     resultChart = new Chart(ctx, {
         type: 'radar',
-        data: chartData,
+        data: {
+            labels: topics.map(topic => topic.name),
+            datasets: [{
+                label: 'Círculo da Performance',
+                data: chartData,
+                backgroundColor: 'rgba(255, 215, 0, 0.4)',
+                borderColor: 'rgba(255, 215, 0, 1)',
+                pointBackgroundColor: 'rgba(255, 215, 0, 1)',
+                pointBorderColor: '#fff',
+            }]
+        },
         options: {
             scales: {
                 r: {
@@ -109,36 +136,24 @@ function generateResults() {
                     max: 10,
                     ticks: {
                         stepSize: 2,
-                        color: '#fff', // Cor dos valores na escala radial
+                        color: '#fff',
                         backdropColor: 'rgba(0, 0, 0, 0)' // Remove fundo dos ticks
                     },
-                    pointLabels: {
-                        color: '#fff',
-                        font: {
-                            size: 14
-                        }
-                    },
                     grid: {
-                        color: 'rgba(255, 255, 255, 0.2)' // Cor das linhas da grade
-                    },
-                    angleLines: {
-                        color: 'rgba(255, 255, 255, 0.2)' // Cor das linhas radiais
+                        color: 'rgba(255, 255, 255, 0.2)'
                     }
                 }
             },
             plugins: {
-                legend: {
-                    display: false
-                }
+                legend: { display: false }
             }
         }
     });
 
-    // Mostra o modal com o gráfico
+    // Exibe o modal com o gráfico
     document.getElementById('overlay').style.display = 'block';
     document.getElementById('result-modal').style.display = 'block';
 }
-
 
 // Fecha o modal
 function closeModal() {
