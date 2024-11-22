@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const startButton = document.getElementById('start-button');
     const overlay = document.getElementById('overlay');
     const resultButton = document.getElementById('result-button');
+    const questionInput = document.querySelector('#question-container input');
 
     if (startButton) {
         startButton.addEventListener('click', startEvaluation);
@@ -60,9 +61,23 @@ function loadQuestion() {
         <input type="number" min="1" max="10" placeholder="Insira um número de 1 a 10" 
             value="${scores[topic.name] || ''}" onchange="updateScore('${topic.name}', this.value)">
     `;
+    const inputField = questionContainer.querySelector('input');
+    inputField.focus();
+    inputField.addEventListener('keypress', handleEnterKey);
+
     document.getElementById('prev-button').style.display = currentQuestion > 0 ? 'block' : 'none';
     document.getElementById('next-button').style.display = currentQuestion < topics.length - 1 ? 'block' : 'none';
     document.getElementById('result-button').style.display = currentQuestion === topics.length - 1 ? 'block' : 'none';
+}
+
+function handleEnterKey(event) {
+    if (event.key === 'Enter') {
+        if (currentQuestion < topics.length - 1) {
+            nextQuestion();
+        } else {
+            generateResults();
+        }
+    }
 }
 
 function updateScore(topic, value) {
