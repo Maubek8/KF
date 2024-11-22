@@ -82,10 +82,25 @@ function generateResults() {
         alert("Por favor, insira seu nome.");
         return;
     }
+
     document.getElementById('userName').textContent = name;
+
     const chartData = topics.map(topic => scores[topic.name] || 0);
+    const improvementList = document.getElementById('improvement-list');
+    improvementList.innerHTML = ''; // Limpa a lista antes de gerar
+
+    // Calcular e exibir o potencial de melhora
+    topics.forEach((topic, index) => {
+        const score = chartData[index];
+        const improvement = 100 - score * 10; // Potencial de melhora em porcentagem
+        const listItem = document.createElement('li');
+        listItem.textContent = `${topic.name}: ${improvement}% de potencial de melhora`;
+        improvementList.appendChild(listItem);
+    });
+
     const ctx = document.getElementById('resultChart').getContext('2d');
     if (resultChart) resultChart.destroy();
+
     resultChart = new Chart(ctx, {
         type: 'radar',
         data: {
@@ -112,9 +127,11 @@ function generateResults() {
             plugins: { legend: { display: false } }
         }
     });
+
     document.getElementById('overlay').style.display = 'block';
     document.getElementById('result-modal').style.display = 'block';
 }
+
 
 function downloadPDF() {
     const { jsPDF } = window.jspdf;
