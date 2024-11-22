@@ -11,7 +11,7 @@ body {
 .header {
     text-align: center;
     padding: 20px;
-    background-color: #FFD700; /* Fundo amarelo para contraste */
+    background-color: #fff; /* Fundo amarelo para contraste */
     color: #000;
     margin-bottom: 20px;
 }
