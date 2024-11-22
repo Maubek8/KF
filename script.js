@@ -35,6 +35,22 @@ document.addEventListener('DOMContentLoaded', () => {
     prevButton.addEventListener('click', prevQuestion);
     resultButton.addEventListener('click', generateResults);
 
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            const questionInput = document.getElementById('question-input');
+            if (questionInput && questionInput.value) {
+                updateScore(topics[currentQuestion].name, questionInput.value);
+                if (currentQuestion < topics.length - 1) {
+                    nextQuestion();
+                } else {
+                    generateResults();
+                }
+            } else {
+                alert("Por favor, insira um valor válido antes de continuar.");
+            }
+        }
+    });
+
     function toggleExplanation() {
         const explanation = document.getElementById('explanation');
         explanation.classList.toggle('hidden');
@@ -94,12 +110,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function generateResults() {
         const chartData = topics.map(topic => scores[topic.name] || 0);
-
         const radarCanvas = document.getElementById('resultChart');
-        if (!radarCanvas) {
-            console.error("Canvas do gráfico não encontrado.");
-            return;
-        }
+        if (!radarCanvas) return;
+
         const radarContext = radarCanvas.getContext('2d');
         if (radarChart) radarChart.destroy();
 
@@ -107,22 +120,16 @@ document.addEventListener('DOMContentLoaded', () => {
             type: 'radar',
             data: {
                 labels: topics.map(topic => topic.name),
-                datasets: [
-                    {
-                        label: 'Desempenho Atual',
-                        data: chartData,
-                        backgroundColor: 'rgba(255, 215, 0, 0.4)',
-                        borderColor: 'rgba(255, 215, 0, 1)'
-                    }
-                ]
+                datasets: [{
+                    label: 'Desempenho Atual',
+                    data: chartData,
+                    backgroundColor: 'rgba(255, 215, 0, 0.4)',
+                    borderColor: 'rgba(255, 215, 0, 1)'
+                }]
             },
             options: {
                 scales: {
-                    r: {
-                        beginAtZero: true,
-                        max: 10,
-                        ticks: { stepSize: 2 }
-                    }
+                    r: { beginAtZero: true, max: 10, ticks: { stepSize: 2 } }
                 }
             }
         });
@@ -132,13 +139,11 @@ document.addEventListener('DOMContentLoaded', () => {
         topics.forEach((topic, index) => {
             const score = chartData[index];
             const improvement = 100 - score * 10;
-            const improvementItem = `
+            improvementBarsContainer.innerHTML += `
                 <div class="improvement-item">
                     <p>${topic.name}: ${improvement}%</p>
                     <progress value="${improvement}" max="100"></progress>
-                </div>
-            `;
-            improvementBarsContainer.innerHTML += improvementItem;
+                </div>`;
         });
 
         document.getElementById('overlay').classList.remove('hidden');
@@ -148,31 +153,5 @@ document.addEventListener('DOMContentLoaded', () => {
     function closeModal() {
         document.getElementById('overlay').classList.add('hidden');
         document.getElementById('result-modal').classList.add('hidden');
-    }
-
-    function downloadPDF() {
-        const pdf = new jsPDF();
-        const radarCanvas = document.getElementById('resultChart');
-
-        if (!radarCanvas) {
-            console.error("Canvas não encontrado para gerar o PDF.");
-            return;
-        }
-
-        const radarImage = radarCanvas.toDataURL('image/png');
-        pdf.text("Círculo da Performance - Resultados", 10, 10);
-        pdf.addImage(radarImage, 'PNG', 10, 20, 180, 180);
-
-        const improvementBarsContainer = document.getElementById('improvement-bars');
-        let yPosition = 220;
-        if (improvementBarsContainer && improvementBarsContainer.children.length > 0) {
-            improvementBarsContainer.querySelectorAll('.improvement-item').forEach(item => {
-                const text = item.querySelector('p').innerText;
-                pdf.text(text, 10, yPosition);
-                yPosition += 10;
-            });
-        }
-
-        pdf.save('resultados.pdf');
     }
 });
