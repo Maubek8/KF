@@ -4,21 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Círculo da Performance</title>
+    <!-- Estilos -->
     <link rel="stylesheet" href="style.css">
+    <!-- Bibliotecas Externas -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
 </head>
 <body>
-   <div class="header">
-    <img src="image/alogomk.jpg" alt="Logo do Círculo da Performance" id="logo">
-    <h1>Círculo da Performance</h1>
-    <p class="powered-by">Powered by Me. Mauricio Kraemer, MD.</p>
-</div>
+    <!-- Cabeçalho -->
+    <div class="header">
+        <img src="image/alogomk.jpg" alt="Logo do Círculo da Performance" id="logo">
+        <h1>Círculo da Performance</h1>
+        <p class="powered-by">Powered by Me. Mauricio Kraemer, MD.</p>
+    </div>
 
+    <!-- Conteúdo Principal -->
     <main class="container">
+        <!-- Seção de Login -->
         <section class="card" id="login-section">
             <button class="button secondary" id="info-button">O que é o Círculo da Performance?</button>
-            <div id="explanation" style="display: none;">
+            <div id="explanation" class="hidden">
                 <h3>O que é o Círculo da Performance?</h3>
                 <p>O Círculo da Performance é uma ferramenta interativa que avalia 12 aspectos essenciais da saúde, bem-estar e desempenho por meio de notas de 1 a 10 em diferentes áreas, como sono, alimentação e treino. Ele ajuda a identificar pontos de melhoria e criar um plano focado para maximizar seu potencial.</p>
             </div>
@@ -29,39 +34,41 @@
             <button class="button" id="start-button">Iniciar Avaliação</button>
         </section>
 
-        <section class="card" id="question-section" style="display: none;">
+        <!-- Seção de Perguntas -->
+        <section class="card" id="question-section" class="hidden">
             <div id="question-container"></div>
             <div class="button-group">
-                <button class="button" id="prev-button" onclick="prevQuestion()" style="display: none;">Anterior</button>
+                <button class="button" id="prev-button" onclick="prevQuestion()" class="hidden">Anterior</button>
                 <button class="button" id="next-button" onclick="nextQuestion()">Próxima</button>
-                <button class="button" id="result-button" onclick="generateResults()" style="display: none;">Visualizar Resultados</button>
+                <button class="button" id="result-button" onclick="generateResults()" class="hidden">Visualizar Resultados</button>
             </div>
         </section>
     </main>
 
-    <div id="overlay" style="display: none;"></div>
-    <div id="result-modal" style="display: none;">
+    <!-- Modal de Resultados -->
+    <div id="overlay" class="hidden"></div>
+    <div id="result-modal" class="hidden">
         <h2>Círculo da Performance</h2>
         <h3>MK - CARDIOSPORT</h3>
         <img src="image/alogomk.jpg" alt="Logo MK CARDIOSPORT" style="width: 100px; display: block; margin: 10px auto;">
         
-        <!-- Gráfico de radar -->
-        <canvas id="resultChart" width="500" height="500" style="margin: 20px auto;"></canvas>
+        <!-- Gráfico de Radar -->
+        <canvas id="resultChart" width="500" height="500"></canvas>
 
-        <!-- Bloco para as barras de potencial de melhora -->
-        <div id="improvement-bars" class="improvement-bars" style="margin-top: 20px;">
-            <!-- Barras geradas dinamicamente aparecerão aqui -->
-        </div>
+        <!-- Barras de Potencial de Melhora -->
+        <div id="improvement-bars" class="improvement-bars"></div>
 
-        <div id="improvement-section" style="text-align: center; margin-top: 20px;">
+        <!-- Lista de Potencial de Melhora -->
+        <div id="improvement-section" style="text-align: center;">
             <h3>Potencial de Melhora</h3>
-            <ul id="improvement-list" style="list-style-type: none; padding: 0;"></ul>
+            <ul id="improvement-list" class="list"></ul>
         </div>
         
         <button class="button" onclick="closeModal()">Fechar</button>
         <button class="button" onclick="downloadPDF()">Imprimir</button>
     </div>
 
+    <!-- Scripts -->
     <script src="script.js"></script>
 </body>
 </html>
