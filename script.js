@@ -49,7 +49,13 @@ function toggleExplanation() {
         console.error("Elemento com ID 'explanation' não encontrado.");
         return;
     }
-    explanation.style.display = explanation.style.display === 'none' ? 'block' : 'none';
+
+    // Alterna entre 'block' e 'none'
+    if (explanation.style.display === 'none' || explanation.style.display === '') {
+        explanation.style.display = 'block';
+    } else {
+        explanation.style.display = 'none';
+    }
 }
 
 // Iniciar a avaliação
@@ -191,22 +197,32 @@ function closeModal() {
 function downloadPDF() {
     const pdf = new jsPDF();
     const radarCanvas = document.getElementById('resultChart');
+
     if (!radarCanvas) {
         console.error("Canvas com ID 'resultChart' não encontrado.");
         return;
     }
 
+    // Adiciona o gráfico de radar
     const radarImage = radarCanvas.toDataURL('image/png');
     pdf.text("Círculo da Performance - Resultados", 10, 10);
     pdf.addImage(radarImage, 'PNG', 10, 20, 180, 180);
 
+    // Adiciona as barras de potencial de melhora
+    const improvementBarsContainer = document.getElementById('improvement-bars');
     let yPosition = 220;
-    topics.forEach((topic, index) => {
-        const score = scores[topic.name] || 0;
-        const improvement = 100 - score * 10;
-        pdf.text(`${topic.name}: ${improvement}%`, 10, yPosition);
-        yPosition += 10;
-    });
 
+    if (improvementBarsContainer) {
+        const improvementItems = improvementBarsContainer.querySelectorAll('.improvement-item');
+        improvementItems.forEach(item => {
+            const text = item.querySelector('p').innerText;
+            pdf.text(text, 10, yPosition);
+            yPosition += 10;
+        });
+    } else {
+        console.error("Elemento com ID 'improvement-bars' não encontrado.");
+    }
+
+    // Salva o PDF
     pdf.save('circulo_performance.pdf');
 }
