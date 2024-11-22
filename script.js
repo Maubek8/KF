@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const startButton = document.getElementById('start-button');
     const overlay = document.getElementById('overlay');
-    const infoButton = document.querySelector('.button.secondary');
+    const infoButton = document.querySelector('.button.secondary'); // Seleciona botão de Info
     const resultButton = document.getElementById('result-button');
 
     // Adicionar eventos aos botões
@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (infoButton) {
-        infoButton.addEventListener('click', toggleExplanation);
+        infoButton.addEventListener('click', toggleExplanation); // Corrige conexão do botão Info
     }
 
     if (overlay) {
@@ -139,33 +139,28 @@ function generateResults() {
             ]
         },
         options: {
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            const score = context.raw;
+                            return `Potencial de Melhora: ${100 - score * 10}%`;
+                        }
+                    }
+                }
+            },
             scales: {
                 r: {
                     beginAtZero: true,
                     max: 10,
                     ticks: { stepSize: 2 }
                 }
-            },
-            plugins: { legend: { display: false } }
+            }
         }
     });
 
-    // Gera barras de potencial de melhora
-    const improvementBarsContainer = document.getElementById('improvement-bars');
-    improvementBarsContainer.innerHTML = ''; // Limpa o conteúdo anterior
-    topics.forEach((topic, index) => {
-        const score = chartData[index];
-        const improvement = 100 - score * 10; // Potencial de melhora em %
-        const improvementItem = `
-            <div class="improvement-item">
-                <p>${topic.name}</p>
-                <progress value="${improvement}" max="100"></progress>
-            </div>
-        `;
-        improvementBarsContainer.innerHTML += improvementItem;
-    });
-
-    // Exibe o modal
+    // Exibe modal
     document.getElementById('overlay').style.display = 'block';
     document.getElementById('result-modal').style.display = 'block';
 }
