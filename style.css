@@ -79,6 +79,28 @@ input[type="text"]:focus {
     outline: none;
 }
 
+input[type="number"] {
+    width: calc(100% - 2rem); /* Ajuste para incluir placeholder */
+    padding: 10px;
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    font-size: 1rem;
+    background: #f9f9f9;
+    text-align: center;
+}
+
+input[type="number"]:focus {
+    border-color: var(--accent-color);
+    outline: none;
+}
+
+.button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
 .button {
     width: 100%;
     padding: 10px 15px;
@@ -95,6 +117,18 @@ input[type="text"]:focus {
 .button:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.secondary {
+    background: none;
+    color: var(--accent-color);
+    border: 1px solid var(--accent-color);
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.secondary:hover {
+    background: var(--accent-color);
+    color: var(--text-light);
 }
 
 #overlay {
@@ -120,8 +154,3 @@ input[type="text"]:focus {
     z-index: 20;
     text-align: center;
 }
-.button-group {
-    display: flex;
-    flex-direction: column; /* Alinha os botões verticalmente */
-    gap: 10px; /* Espaçamento entre os botões */
-    width: 100%; /* Garante
