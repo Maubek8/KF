@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Botões e elementos principais
     const startButton = document.getElementById('start-button');
     const infoButton = document.getElementById('info-button');
     const overlay = document.getElementById('overlay');
@@ -9,7 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const prevButton = document.getElementById('prev-button');
     const resultButton = document.getElementById('result-button');
 
-    // Tópicos para avaliação
     const topics = [
         { name: "Sono", description: "Avalie sua qualidade de sono." },
         { name: "Endurance", description: "Avalie sua resistência física." },
@@ -25,11 +23,10 @@ document.addEventListener('DOMContentLoaded', () => {
         { name: "Tempo/Intensidade de treino", description: "Avalie sua rotina de treinos." }
     ];
 
-    let currentQuestion = 0; // Índice da pergunta atual
-    const scores = {}; // Respostas armazenadas
-    let resultChart; // Gráfico de radar
+    let currentQuestion = 0;
+    const scores = {};
+    let radarChart;
 
-    // Adicionar eventos aos botões
     startButton.addEventListener('click', startEvaluation);
     infoButton.addEventListener('click', toggleExplanation);
     closeButton.addEventListener('click', closeModal);
@@ -38,13 +35,11 @@ document.addEventListener('DOMContentLoaded', () => {
     prevButton.addEventListener('click', prevQuestion);
     resultButton.addEventListener('click', generateResults);
 
-    // Alternar explicação
     function toggleExplanation() {
         const explanation = document.getElementById('explanation');
         explanation.classList.toggle('hidden');
     }
 
-    // Iniciar avaliação
     function startEvaluation() {
         const name = document.getElementById('name').value.trim();
         if (!name) {
@@ -56,7 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
         loadQuestion();
     }
 
-    // Carregar pergunta atual
     function loadQuestion() {
         const questionContainer = document.getElementById('question-container');
         const topic = topics[currentQuestion];
@@ -70,13 +64,11 @@ document.addEventListener('DOMContentLoaded', () => {
         questionInput.focus();
         questionInput.addEventListener('change', () => updateScore(topic.name, questionInput.value));
 
-        // Atualizar visibilidade dos botões
         prevButton.classList.toggle('hidden', currentQuestion === 0);
         nextButton.classList.toggle('hidden', currentQuestion === topics.length - 1);
         resultButton.classList.toggle('hidden', currentQuestion !== topics.length - 1);
     }
 
-    // Atualizar pontuação
     function updateScore(topic, value) {
         const parsedValue = parseInt(value, 10);
         if (isNaN(parsedValue) || parsedValue < 1 || parsedValue > 10) {
@@ -86,7 +78,6 @@ document.addEventListener('DOMContentLoaded', () => {
         scores[topic] = parsedValue;
     }
 
-    // Navegar entre perguntas
     function nextQuestion() {
         if (currentQuestion < topics.length - 1) {
             currentQuestion++;
@@ -101,20 +92,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Gerar resultados
     function generateResults() {
         const chartData = topics.map(topic => scores[topic.name] || 0);
 
-        // Configurar gráfico de radar
         const radarCanvas = document.getElementById('resultChart');
         if (!radarCanvas) {
             console.error("Canvas do gráfico não encontrado.");
             return;
         }
         const radarContext = radarCanvas.getContext('2d');
-        if (resultChart) resultChart.destroy();
+        if (radarChart) radarChart.destroy();
 
-        resultChart = new Chart(radarContext, {
+        radarChart = new Chart(radarContext, {
             type: 'radar',
             data: {
                 labels: topics.map(topic => topic.name),
@@ -138,7 +127,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Gerar gráfico de barras
         const improvementBarsContainer = document.getElementById('improvement-bars');
         improvementBarsContainer.innerHTML = '';
         topics.forEach((topic, index) => {
@@ -153,18 +141,15 @@ document.addEventListener('DOMContentLoaded', () => {
             improvementBarsContainer.innerHTML += improvementItem;
         });
 
-        // Exibir modal de resultados
         document.getElementById('overlay').classList.remove('hidden');
         document.getElementById('result-modal').classList.remove('hidden');
     }
 
-    // Fechar modal
     function closeModal() {
         document.getElementById('overlay').classList.add('hidden');
         document.getElementById('result-modal').classList.add('hidden');
     }
 
-    // Gerar PDF
     function downloadPDF() {
         const pdf = new jsPDF();
         const radarCanvas = document.getElementById('resultChart');
@@ -174,15 +159,13 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Adicionar gráfico de radar ao PDF
         const radarImage = radarCanvas.toDataURL('image/png');
         pdf.text("Círculo da Performance - Resultados", 10, 10);
         pdf.addImage(radarImage, 'PNG', 10, 20, 180, 180);
 
-        // Adicionar barras de melhoria ao PDF
         const improvementBarsContainer = document.getElementById('improvement-bars');
         let yPosition = 220;
-        if (improvementBarsContainer && improvementBarsContainer.children.length) {
+        if (improvementBarsContainer && improvementBarsContainer.children.length > 0) {
             improvementBarsContainer.querySelectorAll('.improvement-item').forEach(item => {
                 const text = item.querySelector('p').innerText;
                 pdf.text(text, 10, yPosition);
@@ -190,7 +173,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // Salvar PDF
         pdf.save('resultados.pdf');
     }
 });
