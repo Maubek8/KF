@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const startButton = document.getElementById('start-button');
     const overlay = document.getElementById('overlay');
-    const infoButton = document.querySelector('.button.secondary'); // Botão Info
+    const infoButton = document.querySelector('.button.secondary');
     const resultButton = document.getElementById('result-button');
 
     // Adicionar eventos aos botões
@@ -120,11 +120,11 @@ function handleEnterKey(event) {
         }
     }
 }
-
 // Gerar resultados e exibir modal
 function generateResults() {
     const chartData = topics.map(topic => scores[topic.name] || 0);
 
+    // Atualiza gráfico de radar
     const ctx = document.getElementById('resultChart');
     if (!ctx) {
         console.error("Canvas com ID 'resultChart' não encontrado.");
@@ -147,6 +147,13 @@ function generateResults() {
             ]
         },
         options: {
+            scales: {
+                r: {
+                    beginAtZero: true,
+                    max: 10,
+                    ticks: { stepSize: 2 }
+                }
+            },
             plugins: {
                 tooltip: {
                     callbacks: {
@@ -156,25 +163,23 @@ function generateResults() {
                         }
                     }
                 }
-            },
-            scales: {
-                r: {
-                    beginAtZero: true,
-                    max: 10,
-                    ticks: { stepSize: 2 }
-                }
             }
         }
     });
 
+    // Gerar barras de potencial de melhora
     const improvementBarsContainer = document.getElementById('improvement-bars');
+    if (!improvementBarsContainer) {
+        console.error("Elemento com ID 'improvement-bars' não encontrado.");
+        return;
+    }
     improvementBarsContainer.innerHTML = '';
     topics.forEach((topic, index) => {
         const score = chartData[index];
         const improvement = 100 - score * 10;
         const improvementItem = `
             <div class="improvement-item">
-                <p>${topic.name}</p>
+                <p>${topic.name}: ${improvement}%</p>
                 <progress value="${improvement}" max="100"></progress>
             </div>
         `;
@@ -202,5 +207,13 @@ function downloadPDF() {
     const imgData = canvas.toDataURL('image/png');
     pdf.text("Círculo da Performance - Resultados", 10, 10);
     pdf.addImage(imgData, 'PNG', 10, 20, 180, 180);
+
+    const improvementText = topics.map((topic, index) => {
+        const score = scores[topic.name] || 0;
+        const improvement = 100 - score * 10;
+        return `${topic.name}: ${improvement}%`;
+    }).join("\n");
+    pdf.text(improvementText, 10, 220);
+
     pdf.save('circulo_performance.pdf');
 }
