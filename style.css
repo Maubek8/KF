@@ -1,18 +1,83 @@
-/* Botões centralizados */
+/* Global Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+/* Header */
+.header {
+    text-align: center;
+    padding: 20px;
+    background-color: #4B0082; /* Fundo roxo */
+    color: #fff;
+}
+
+.header img {
+    width: 80px; /* Tamanho proporcional da logo */
+    margin-bottom: 10px;
+}
+
+/* Container */
+.container {
+    width: 80%;
+    margin: 20px auto;
+    text-align: center;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    max-width: 600px; /* Limita largura */
+}
+
+/* Input Group */
+.input-group {
+    margin: 20px 0;
+}
+
+.input-group input {
+    width: calc(100% - 20px);
+    max-width: 400px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Buttons */
+.button {
+    padding: 10px 20px;
+    margin: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #FFD700; /* Amarelo */
+    color: #333; /* Contraste legível */
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.button.secondary {
+    background-color: #6c757d;
+    color: #fff;
+}
+
 .button-group {
     display: flex;
     justify-content: center;
     gap: 10px;
 }
 
-/* Lista de melhorias em amarelo */
-#improvement-list li {
-    font-size: 14px;
-    color: #FFD700; /* Amarelo */
-    margin: 5px 0;
+/* Cards */
+.card {
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #f8f9fa;
 }
 
-/* Modal de resultados com rolagem */
+/* Modal */
 #result-modal {
     position: fixed;
     top: 50%;
@@ -26,22 +91,46 @@
     max-width: 600px;
     z-index: 1000;
     overflow-y: auto;
-    max-height: 90%; /* Limita a altura */
+    max-height: 90%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-/* Melhor visualização em dispositivos móveis */
+#overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 999;
+}
+
+/* Improvement List */
+#improvement-list li {
+    font-size: 14px;
+    color: #FFD700; /* Amarelo */
+    margin: 5px 0;
+    text-align: left; /* Melhor para leitura */
+}
+
+/* Responsividade */
 @media (max-width: 768px) {
     .container {
         width: 95%;
+        padding: 15px;
     }
 
-    #resultChart {
-        width: 100%;
-        height: auto;
+    .header img {
+        width: 60px; /* Logo menor em dispositivos móveis */
     }
 
     #result-modal {
         width: 95%;
         max-height: 80%;
+    }
+
+    .button {
+        font-size: 12px;
+        padding: 8px 16px;
     }
 }
