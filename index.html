@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="image/favicon.ico" type="image/x-icon">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
 </head>
 <body>
     <div class="header">
@@ -50,9 +51,11 @@
     <div id="overlay" style="display: none;"></div>
     <div id="result-modal" style="display: none;" role="dialog" aria-labelledby="modal-title" aria-hidden="true">
         <h2 id="modal-title">Resultado de <span id="userName"></span></h2>
+        <p id="result-date"></p>
         <canvas id="resultChart" width="740" height="740"></canvas>
         <p>Análise: As áreas mais próximas do centro representam pontos a serem otimizados. Quanto mais afastadas, melhor o desempenho.</p>
         <button class="button" onclick="closeModal()">Fechar</button>
+        <button class="button" onclick="downloadPDF()">Imprimir</button>
     </div>
 
     <script src="script.js"></script>
