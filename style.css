@@ -141,9 +141,31 @@ input[type="number"]:focus {
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
     z-index: 20;
     text-align: center;
-    max-height: 80%; /* Limita a altura do modal */
-    width: 90%; /* Ajuste para evitar largura excessiva */
-    overflow-y: auto; /* Adiciona rolagem vertical */
-    overflow-x: hidden; /* Evita rolagem horizontal */
+    max-height: 80%;
+    width: 90%;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
+
+#resultChart {
+    margin: 0 auto;
+    display: block;
+}
+
+#improvement-section {
+    margin-top: 20px;
+}
+
+#improvement-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+}
+
+#improvement-list li {
+    font-size: 1rem;
+    margin: 5px 0;
+}
+
 
