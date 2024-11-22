@@ -14,55 +14,36 @@ const topics = [
     { name: "Tempo/Intensidade de treino", description: "Avalie sua rotina de treinos. Nota 1: Irregular ou inexistente. Nota 10: Treinos regulares e consistentes." }
 ];
 
-// Variáveis globais
 let currentQuestion = 0; // Índice da pergunta atual
 const scores = {}; // Armazena as notas para cada tópico
-let resultChart; // Armazena a instância do gráfico
+let resultChart; // Instância do gráfico
 
-// Eventos configurados após o carregamento do DOM
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('start-button').addEventListener('click', startEvaluation);
-    document.getElementById('overlay').addEventListener('click', closeModal); // Fecha ao clicar no fundo escuro
+    document.getElementById('overlay').addEventListener('click', closeModal);
 });
 
-// Função para exibir ou ocultar a explicação
-function toggleExplanation() {
-    const explanation = document.getElementById('explanation');
-    explanation.style.display = explanation.style.display === 'none' ? 'block' : 'none';
-}
-
-// Inicia a avaliação e mostra a primeira pergunta
 function startEvaluation() {
     const name = document.getElementById('name').value.trim();
     if (!name) {
         alert("Por favor, insira seu nome completo.");
         return;
     }
-
-    // Oculta a tela inicial e exibe a seção de perguntas
     document.getElementById('login-section').style.display = 'none';
     document.getElementById('question-section').style.display = 'block';
-
-    // Carrega a primeira pergunta
     loadQuestion();
 }
 
-// Carrega a pergunta atual
 function loadQuestion() {
     const questionContainer = document.getElementById('question-container');
     const topic = topics[currentQuestion];
-
-    // Calcula o potencial de melhora se houver um valor preenchido
-    const currentScore = scores[topic.name] || 0;
-    const potential = 100 - (currentScore * 10);
 
     // Atualiza o conteúdo do contêiner de perguntas
     questionContainer.innerHTML = `
         <h3>${topic.name}</h3>
         <p>${topic.description}</p>
-        <input type="number" min="1" max="10" placeholder="Insira uma nota" value="${currentScore || ''}" 
-            onchange="updateScore('${topic.name}', this.value)">
-        <p class="potential">Potencial de Melhora: <strong>${potential}%</strong></p>
+        <input type="number" min="1" max="10" placeholder="Insira uma nota" 
+            value="${scores[topic.name] || ''}" onchange="updateScore('${topic.name}', this.value)">
     `;
 
     // Atualiza a visibilidade dos botões
@@ -71,7 +52,6 @@ function loadQuestion() {
     document.getElementById('result-button').style.display = currentQuestion === topics.length - 1 ? 'block' : 'none';
 }
 
-// Atualiza a pontuação para o tópico atual
 function updateScore(topic, value) {
     const parsedValue = parseInt(value, 10);
     if (parsedValue < 1 || parsedValue > 10) {
@@ -79,10 +59,8 @@ function updateScore(topic, value) {
         return;
     }
     scores[topic] = parsedValue;
-    loadQuestion(); // Recarrega a pergunta para atualizar o potencial de melhora
 }
 
-// Avança para a próxima pergunta
 function nextQuestion() {
     if (currentQuestion < topics.length - 1) {
         currentQuestion++;
@@ -90,7 +68,6 @@ function nextQuestion() {
     }
 }
 
-// Retorna para a pergunta anterior
 function prevQuestion() {
     if (currentQuestion > 0) {
         currentQuestion--;
@@ -98,7 +75,6 @@ function prevQuestion() {
     }
 }
 
-// Gera os resultados e exibe o gráfico de radar
 function generateResults() {
     const name = document.getElementById('name').value.trim();
     if (!name) {
@@ -106,25 +82,21 @@ function generateResults() {
         return;
     }
 
-    // Atualiza o nome do usuário no modal
     document.getElementById('userName').textContent = name;
 
-    // Prepara os dados para o gráfico
     const chartData = topics.map(topic => scores[topic.name] || 0);
+    const potentialImprovement = chartData.map(score => 100 - score * 10);
 
-    // Obtém o contexto do canvas
     const ctx = document.getElementById('resultChart').getContext('2d');
 
-    // Destroi o gráfico existente, se houver, para evitar conflitos
     if (resultChart) {
         resultChart.destroy();
     }
 
-    // Cria o gráfico de radar
     resultChart = new Chart(ctx, {
         type: 'radar',
         data: {
-            labels: topics.map(topic => topic.name),
+            labels: topics.map(topic => `${topic.name} (${100 - (scores[topic.name] || 0) * 10}%)`),
             datasets: [{
                 label: 'Círculo da Performance',
                 data: chartData,
@@ -143,7 +115,7 @@ function generateResults() {
                     ticks: {
                         stepSize: 2,
                         color: '#fff',
-                        backdropColor: 'rgba(0, 0, 0, 0)' // Remove fundo dos ticks
+                        backdropColor: 'rgba(0, 0, 0, 0)'
                     },
                     grid: {
                         color: 'rgba(255, 255, 255, 0.2)'
@@ -156,12 +128,10 @@ function generateResults() {
         }
     });
 
-    // Exibe o modal com o gráfico
     document.getElementById('overlay').style.display = 'block';
     document.getElementById('result-modal').style.display = 'block';
 }
 
-// Fecha o modal
 function closeModal() {
     document.getElementById('overlay').style.display = 'none';
     document.getElementById('result-modal').style.display = 'none';
