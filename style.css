@@ -1,3 +1,4 @@
+/* Global Styles */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -6,10 +7,11 @@ body {
     color: #333;
 }
 
+/* Header */
 .header {
     text-align: center;
     padding: 20px;
-    background-color: #007BFF;
+    background-color: #4B0082;
     color: #fff;
 }
 
@@ -18,8 +20,9 @@ body {
     margin-bottom: 10px;
 }
 
+/* Container */
 .container {
-    width: 80%;
+    width: 90%;
     margin: 20px auto;
     text-align: center;
     background: #fff;
@@ -28,24 +31,26 @@ body {
     padding: 20px;
 }
 
+/* Input Group */
 .input-group {
     margin: 20px 0;
 }
 
 .input-group input {
-    width: calc(100% - 20px);
+    width: 80%;
     max-width: 400px;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
 }
 
+/* Buttons */
 .button {
     padding: 10px 20px;
     margin: 10px;
     border: none;
     border-radius: 5px;
-    background-color: #007BFF;
+    background-color: #4B0082;
     color: #fff;
     cursor: pointer;
 }
@@ -54,6 +59,7 @@ body {
     background-color: #6c757d;
 }
 
+/* Card */
 .card {
     padding: 20px;
     border: 1px solid #ccc;
@@ -61,6 +67,7 @@ body {
     background-color: #f8f9fa;
 }
 
+/* Result Modal */
 #result-modal {
     position: fixed;
     top: 50%;
@@ -70,7 +77,7 @@ body {
     padding: 20px;
     border-radius: 10px;
     text-align: center;
-    width: 80%;
+    width: 90%;
     max-width: 600px;
     z-index: 1000;
 }
@@ -85,8 +92,21 @@ body {
     z-index: 999;
 }
 
+/* Improvement List */
 #improvement-list li {
     font-size: 14px;
     color: purple;
     margin: 5px 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        width: 95%;
+    }
+
+    #resultChart {
+        width: 100%;
+        height: auto;
+    }
 }
