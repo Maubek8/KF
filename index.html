@@ -35,12 +35,12 @@
         </section>
 
         <!-- Seção de Perguntas -->
-        <section class="card" id="question-section" class="hidden">
+        <section class="card hidden" id="question-section">
             <div id="question-container"></div>
             <div class="button-group">
-                <button class="button" id="prev-button" onclick="prevQuestion()" class="hidden">Anterior</button>
-                <button class="button" id="next-button" onclick="nextQuestion()">Próxima</button>
-                <button class="button" id="result-button" onclick="generateResults()" class="hidden">Visualizar Resultados</button>
+                <button class="button hidden" id="prev-button">Anterior</button>
+                <button class="button" id="next-button">Próxima</button>
+                <button class="button hidden" id="result-button">Visualizar Resultados</button>
             </div>
         </section>
     </main>
@@ -58,14 +58,8 @@
         <!-- Barras de Potencial de Melhora -->
         <div id="improvement-bars" class="improvement-bars"></div>
 
-        <!-- Lista de Potencial de Melhora -->
-        <div id="improvement-section" style="text-align: center;">
-            <h3>Potencial de Melhora</h3>
-            <ul id="improvement-list" class="list"></ul>
-        </div>
-        
-        <button class="button" onclick="closeModal()">Fechar</button>
-        <button class="button" onclick="downloadPDF()">Imprimir</button>
+        <button class="button" id="close-modal">Fechar</button>
+        <button class="button" id="download-pdf">Imprimir</button>
     </div>
 
     <!-- Scripts -->
