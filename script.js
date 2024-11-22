@@ -38,18 +38,6 @@ document.addEventListener('DOMContentLoaded', () => {
     prevButton.addEventListener('click', prevQuestion);
     resultButton.addEventListener('click', generateResults);
 
-    // Lógica para avançar com a tecla Enter
-    document.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter') {
-            if (document.getElementById('question-section').classList.contains('hidden')) return;
-            if (currentQuestion < topics.length - 1) {
-                nextQuestion();
-            } else {
-                generateResults();
-            }
-        }
-    });
-
     // Alternar explicação
     function toggleExplanation() {
         const explanation = document.getElementById('explanation');
@@ -150,6 +138,21 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
+        // Gerar gráfico de barras
+        const improvementBarsContainer = document.getElementById('improvement-bars');
+        improvementBarsContainer.innerHTML = '';
+        topics.forEach((topic, index) => {
+            const score = chartData[index];
+            const improvement = 100 - score * 10;
+            const improvementItem = `
+                <div class="improvement-item">
+                    <p>${topic.name}: ${improvement}%</p>
+                    <progress value="${improvement}" max="100"></progress>
+                </div>
+            `;
+            improvementBarsContainer.innerHTML += improvementItem;
+        });
+
         // Exibir modal de resultados
         document.getElementById('overlay').classList.remove('hidden');
         document.getElementById('result-modal').classList.remove('hidden');
@@ -175,6 +178,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const radarImage = radarCanvas.toDataURL('image/png');
         pdf.text("Círculo da Performance - Resultados", 10, 10);
         pdf.addImage(radarImage, 'PNG', 10, 20, 180, 180);
+
+        // Adicionar barras de melhoria ao PDF
+        const improvementBarsContainer = document.getElementById('improvement-bars');
+        let yPosition = 220;
+        if (improvementBarsContainer && improvementBarsContainer.children.length) {
+            improvementBarsContainer.querySelectorAll('.improvement-item').forEach(item => {
+                const text = item.querySelector('p').innerText;
+                pdf.text(text, 10, yPosition);
+                yPosition += 10;
+            });
+        }
 
         // Salvar PDF
         pdf.save('resultados.pdf');
