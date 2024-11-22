@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', () => {
     const startButton = document.getElementById('start-button');
     const overlay = document.getElementById('overlay');
@@ -17,20 +16,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Lista de tópicos com descrições e objetivos
 const topics = [
-    { name: "Sono", description: "Avalie a qualidade e duração do seu sono. Nota 1: Sono interrompido e curto. Nota 10: Sono reparador de 7-9 horas." },
-    { name: "Endurance", description: "Avalie sua capacidade de realizar atividades físicas prolongadas. Nota 1: Baixa resistência. Nota 10: Alta resistência." },
-    { name: "Treinamento Força", description: "Avalie sua força muscular durante atividades. Nota 1: Pouca força ou nenhum treino. Nota 10: Treino regular e força elevada." },
-    { name: "Forma física/peso", description: "Avalie sua satisfação com seu peso e composição corporal. Nota 1: Muito insatisfeito. Nota 10: Muito satisfeito." },
-    { name: "Etilismo/Tabagismo", description: "Avalie seu consumo de álcool e tabaco. Nota 1: Consumo diário elevado. Nota 10: Não consome ou raramente consome." },
-    { name: "Espiritualidade", description: "Avalie sua conexão com valores ou práticas espirituais. Nota 1: Desconexão. Nota 10: Alta conexão e equilíbrio." },
-    { name: "Ansiedade", description: "Avalie seu nível de ansiedade no dia a dia. Nota 1: Alta ansiedade. Nota 10: Ansiedade sob controle." },
-    { name: "Hidratação", description: "Avalie sua ingestão diária de água. Nota 1: Menos de 500ml/dia. Nota 10: 2-3L/dia." },
-    { name: "Frutas/Verduras", description: "Avalie seu consumo diário de frutas e verduras. Nota 1: Nenhuma porção. Nota 10: Mais de 5 porções/dia." },
-    { name: "Industrializados/Gordura", description: "Avalie seu consumo de alimentos ultraprocessados. Nota 1: Consumo frequente. Nota 10: Consumo mínimo ou nenhum." },
-    { name: "Energia/Vitalidade", description: "Avalie sua disposição ao longo do dia. Nota 1: Cansaço constante. Nota 10: Alta energia e vitalidade." },
-    { name: "Tempo/Intensidade de treino", description: "Avalie sua rotina de treinos. Nota 1: Irregular ou inexistente. Nota 10: Treinos regulares e consistentes." }
+    { name: "Sono", description: "Avalie sua qualidade de sono." },
+    { name: "Endurance", description: "Avalie sua resistência física." },
+    { name: "Treinamento Força", description: "Avalie sua força muscular." },
+    { name: "Forma física/peso", description: "Avalie seu peso e composição corporal." },
+    { name: "Etilismo/Tabagismo", description: "Avalie seu consumo de álcool/tabaco." },
+    { name: "Espiritualidade", description: "Avalie sua conexão espiritual." },
+    { name: "Ansiedade", description: "Avalie seu nível de ansiedade." },
+    { name: "Hidratação", description: "Avalie sua ingestão de água." },
+    { name: "Frutas/Verduras", description: "Avalie seu consumo de frutas e verduras." },
+    { name: "Industrializados/Gordura", description: "Avalie seu consumo de alimentos processados." },
+    { name: "Energia/Vitalidade", description: "Avalie sua energia diária." },
+    { name: "Tempo/Intensidade de treino", description: "Avalie sua rotina de treinos." },
 ];
 
 let currentQuestion = 0;
@@ -39,9 +37,7 @@ let resultChart;
 
 function toggleExplanation() {
     const explanation = document.getElementById('explanation');
-    if (explanation) {
-        explanation.style.display = explanation.style.display === 'none' ? 'block' : 'none';
-    }
+    explanation.style.display = explanation.style.display === 'none' ? 'block' : 'none';
 }
 
 function startEvaluation() {
@@ -58,14 +54,12 @@ function startEvaluation() {
 function loadQuestion() {
     const questionContainer = document.getElementById('question-container');
     const topic = topics[currentQuestion];
-    if (questionContainer) {
-        questionContainer.innerHTML = `
-            <h3>${topic.name}</h3>
-            <p>${topic.description}</p>
-            <input type="number" min="1" max="10" placeholder="Insira um número de 1 a 10" 
-                value="${scores[topic.name] || ''}" onchange="updateScore('${topic.name}', this.value)">
-        `;
-    }
+    questionContainer.innerHTML = `
+        <h3>${topic.name}</h3>
+        <p>${topic.description}</p>
+        <input type="number" min="1" max="10" placeholder="Insira um número de 1 a 10" 
+            value="${scores[topic.name] || ''}" onchange="updateScore('${topic.name}', this.value)">
+    `;
     document.getElementById('prev-button').style.display = currentQuestion > 0 ? 'block' : 'none';
     document.getElementById('next-button').style.display = currentQuestion < topics.length - 1 ? 'block' : 'none';
     document.getElementById('result-button').style.display = currentQuestion === topics.length - 1 ? 'block' : 'none';
@@ -95,31 +89,14 @@ function prevQuestion() {
 }
 
 function generateResults() {
-    const name = document.getElementById('name').value.trim();
-    if (!name) {
-        alert("Por favor, insira seu nome.");
-        return;
-    }
-
-    document.getElementById('userName').textContent = name;
-
     const chartData = topics.map(topic => scores[topic.name] || 0);
     const improvementList = document.getElementById('improvement-list');
-    if (improvementList) {
-        improvementList.innerHTML = '';
-
-        topics.forEach((topic, index) => {
-            const score = chartData[index];
-            const improvement = 100 - score * 10;
-            const listItem = document.createElement('li');
-            listItem.textContent = `${topic.name}: ${improvement}% de potencial de melhora`;
-            improvementList.appendChild(listItem);
-        });
-    }
+    improvementList.innerHTML = topics.map((topic, index) => `
+        <li>${topic.name}: ${100 - chartData[index] * 10}% de potencial de melhora</li>
+    `).join('');
 
     const ctx = document.getElementById('resultChart').getContext('2d');
     if (resultChart) resultChart.destroy();
-
     resultChart = new Chart(ctx, {
         type: 'radar',
         data: {
@@ -129,20 +106,10 @@ function generateResults() {
                 data: chartData,
                 backgroundColor: 'rgba(255, 215, 0, 0.4)',
                 borderColor: 'rgba(255, 215, 0, 1)',
-                pointBackgroundColor: 'rgba(255, 215, 0, 1)',
-                pointBorderColor: '#fff',
             }]
         },
         options: {
-            scales: {
-                r: {
-                    beginAtZero: true,
-                    min: 0,
-                    max: 10,
-                    ticks: { stepSize: 2, color: '#fff' },
-                    grid: { color: 'rgba(255, 255, 255, 0.2)' }
-                }
-            },
+            scales: { r: { beginAtZero: true, max: 10 } },
             plugins: { legend: { display: false } }
         }
     });
@@ -157,12 +124,10 @@ function closeModal() {
 }
 
 function downloadPDF() {
-    const { jsPDF } = window.jspdf;
     const pdf = new jsPDF();
     const canvas = document.getElementById('resultChart');
     const imgData = canvas.toDataURL('image/png');
-    pdf.text(`Resultado do Círculo da Performance`, 10, 10);
+    pdf.text("Círculo da Performance - Resultados", 10, 10);
     pdf.addImage(imgData, 'PNG', 10, 20, 180, 180);
-    pdf.text(`Data: ${new Date().toLocaleDateString()}`, 10, 210);
     pdf.save('circulo_performance.pdf');
 }
