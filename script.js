@@ -156,22 +156,76 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('result-modal').classList.add('hidden');
     }
 
-    function downloadPDF() {
-        const pdf = new jsPDF();
-        const radarCanvas = document.getElementById('resultChart');
-        if (!radarCanvas) return;
+  function downloadPDF() {
+    // Obter os dados do gráfico de radar e das barras de melhoria
+    const radarCanvas = document.getElementById('resultChart');
+    const improvementBars = document.getElementById('improvement-bars').innerHTML;
 
-        pdf.text("Círculo da Performance - Resultados", 10, 10);
-        pdf.addImage(radarCanvas.toDataURL('image/png'), 'PNG', 10, 20, 180, 180);
-
-        const improvementBars = document.getElementById('improvement-bars').children;
-        let yPosition = 220;
-        for (let item of improvementBars) {
-            const text = item.querySelector('p').innerText;
-            pdf.text(text, 10, yPosition);
-            yPosition += 10;
-        }
-
-        pdf.save('resultados.pdf');
+    if (!radarCanvas) {
+        alert("Gráfico de radar não encontrado.");
+        return;
     }
-});
+
+    // Criar nova janela para impressão
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+        alert("Falha ao abrir a janela de impressão.");
+        return;
+    }
+
+    // HTML básico para a janela de impressão
+    const htmlContent = `
+        <!DOCTYPE html>
+        <html lang="pt-BR">
+        <head>
+            <meta charset="UTF-8">
+            <title>Resultados do Círculo da Performance</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    margin: 20px;
+                }
+                h2, h3 {
+                    text-align: center;
+                }
+                canvas {
+                    display: block;
+                    margin: 20px auto;
+                }
+                .improvement-item {
+                    margin: 10px 0;
+                }
+                progress {
+                    width: 100%;
+                }
+            </style>
+        </head>
+        <body>
+            <h2>Resultados do Círculo da Performance</h2>
+            <h3>MK - CARDIOSPORT</h3>
+            <canvas id="printChart" width="500" height="500"></canvas>
+            <div>
+                <h3>Potencial de Melhora</h3>
+                ${improvementBars}
+            </div>
+            <script>
+                // Renderizar o gráfico de radar na janela de impressão
+                const printCanvas = document.getElementById('printChart');
+                const printContext = printCanvas.getContext('2d');
+                const chartData = ${JSON.stringify(radarCanvas.getContext('2d').getImageData(0, 0, radarCanvas.width, radarCanvas.height))};
+
+                // Desenhar imagem do gráfico na nova página
+                printContext.putImageData(new ImageData(chartData.data, chartData.width, chartData.height), 0, 0);
+
+                // Acionar a impressão
+                window.onload = () => window.print();
+            </script>
+        </body>
+        </html>
+    `;
+
+    // Adicionar o conteúdo e carregar a nova janela
+    printWindow.document.open();
+    printWindow.document.write(htmlContent);
+    printWindow.document.close();
+}
