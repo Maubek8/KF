@@ -132,7 +132,6 @@ function generateResults() {
     document.getElementById('result-modal').style.display = 'block';
 }
 
-
 function downloadPDF() {
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF();
@@ -143,6 +142,7 @@ function downloadPDF() {
     pdf.text(`Data: ${new Date().toLocaleDateString()}`, 10, 210);
     pdf.save('circulo_performance.pdf');
 }
+
 function closeModal() {
     document.getElementById('overlay').style.display = 'none';
     document.getElementById('result-modal').style.display = 'none';
