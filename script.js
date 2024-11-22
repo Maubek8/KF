@@ -1,3 +1,22 @@
+
+document.addEventListener('DOMContentLoaded', () => {
+    const startButton = document.getElementById('start-button');
+    const overlay = document.getElementById('overlay');
+    const resultButton = document.getElementById('result-button');
+
+    if (startButton) {
+        startButton.addEventListener('click', startEvaluation);
+    }
+
+    if (overlay) {
+        overlay.addEventListener('click', closeModal);
+    }
+
+    if (resultButton) {
+        resultButton.addEventListener('click', generateResults);
+    }
+});
+
 // Lista de tópicos com descrições e objetivos
 const topics = [
     { name: "Sono", description: "Avalie a qualidade e duração do seu sono. Nota 1: Sono interrompido e curto. Nota 10: Sono reparador de 7-9 horas." },
@@ -18,14 +37,11 @@ let currentQuestion = 0;
 const scores = {};
 let resultChart;
 
-document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('start-button').addEventListener('click', startEvaluation);
-    document.getElementById('overlay').addEventListener('click', closeModal);
-});
-
 function toggleExplanation() {
     const explanation = document.getElementById('explanation');
-    explanation.style.display = explanation.style.display === 'none' ? 'block' : 'none';
+    if (explanation) {
+        explanation.style.display = explanation.style.display === 'none' ? 'block' : 'none';
+    }
 }
 
 function startEvaluation() {
@@ -42,12 +58,14 @@ function startEvaluation() {
 function loadQuestion() {
     const questionContainer = document.getElementById('question-container');
     const topic = topics[currentQuestion];
-    questionContainer.innerHTML = `
-        <h3>${topic.name}</h3>
-        <p>${topic.description}</p>
-        <input type="number" min="1" max="10" placeholder="Insira um número de 1 a 10" 
-            value="${scores[topic.name] || ''}" onchange="updateScore('${topic.name}', this.value)">
-    `;
+    if (questionContainer) {
+        questionContainer.innerHTML = `
+            <h3>${topic.name}</h3>
+            <p>${topic.description}</p>
+            <input type="number" min="1" max="10" placeholder="Insira um número de 1 a 10" 
+                value="${scores[topic.name] || ''}" onchange="updateScore('${topic.name}', this.value)">
+        `;
+    }
     document.getElementById('prev-button').style.display = currentQuestion > 0 ? 'block' : 'none';
     document.getElementById('next-button').style.display = currentQuestion < topics.length - 1 ? 'block' : 'none';
     document.getElementById('result-button').style.display = currentQuestion === topics.length - 1 ? 'block' : 'none';
@@ -87,16 +105,17 @@ function generateResults() {
 
     const chartData = topics.map(topic => scores[topic.name] || 0);
     const improvementList = document.getElementById('improvement-list');
-    improvementList.innerHTML = ''; // Limpa a lista antes de gerar
+    if (improvementList) {
+        improvementList.innerHTML = '';
 
-    // Calcular e exibir o potencial de melhora
-    topics.forEach((topic, index) => {
-        const score = chartData[index];
-        const improvement = 100 - score * 10; // Potencial de melhora em porcentagem
-        const listItem = document.createElement('li');
-        listItem.textContent = `${topic.name}: ${improvement}% de potencial de melhora`;
-        improvementList.appendChild(listItem);
-    });
+        topics.forEach((topic, index) => {
+            const score = chartData[index];
+            const improvement = 100 - score * 10;
+            const listItem = document.createElement('li');
+            listItem.textContent = `${topic.name}: ${improvement}% de potencial de melhora`;
+            improvementList.appendChild(listItem);
+        });
+    }
 
     const ctx = document.getElementById('resultChart').getContext('2d');
     if (resultChart) resultChart.destroy();
@@ -132,18 +151,18 @@ function generateResults() {
     document.getElementById('result-modal').style.display = 'block';
 }
 
+function closeModal() {
+    document.getElementById('overlay').style.display = 'none';
+    document.getElementById('result-modal').style.display = 'none';
+}
+
 function downloadPDF() {
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF();
     const canvas = document.getElementById('resultChart');
     const imgData = canvas.toDataURL('image/png');
-    pdf.text(`Resultado do Círculo da Performance - ${document.getElementById('userName').textContent}`, 10, 10);
+    pdf.text(`Resultado do Círculo da Performance`, 10, 10);
     pdf.addImage(imgData, 'PNG', 10, 20, 180, 180);
     pdf.text(`Data: ${new Date().toLocaleDateString()}`, 10, 210);
     pdf.save('circulo_performance.pdf');
-}
-
-function closeModal() {
-    document.getElementById('overlay').style.display = 'none';
-    document.getElementById('result-modal').style.display = 'none';
 }
