@@ -21,10 +21,10 @@ let resultChart; // Armazena a instância do gráfico
 // Adiciona eventos após o DOM estar carregado
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('start-button').addEventListener('click', startEvaluation);
+    document.getElementById('next-button').addEventListener('click', nextQuestion);
+    document.getElementById('prev-button').addEventListener('click', prevQuestion);
     document.getElementById('result-button').addEventListener('click', generateResults);
-
-    // Evento para fechar o modal
-    document.getElementById('overlay').addEventListener('click', closeModal);
+    document.getElementById('overlay').addEventListener('click', closeModal); // Fecha ao clicar no fundo escuro
 });
 
 // Inicia a avaliação e mostra a primeira pergunta
@@ -50,9 +50,15 @@ function loadQuestion() {
         <input type="number" min="1" max="10" value="${scores[topic.name] || 5}" onchange="updateScore('${topic.name}', this.value)">
     `;
 
+    // Mostra ou oculta os botões de navegação
     document.getElementById('prev-button').style.display = currentQuestion > 0 ? 'block' : 'none';
     document.getElementById('next-button').style.display = currentQuestion < topics.length - 1 ? 'block' : 'none';
     document.getElementById('result-button').style.display = currentQuestion === topics.length - 1 ? 'block' : 'none';
+}
+
+// Atualiza a pontuação para o tópico atual
+function updateScore(topic, value) {
+    scores[topic] = Number(value);
 }
 
 // Avança para a próxima pergunta
@@ -67,22 +73,14 @@ function prevQuestion() {
     loadQuestion();
 }
 
-// Atualiza a nota do tópico atual
-function updateScore(topic, value) {
-    scores[topic] = Number(value);
-}
-
 // Gera os resultados e exibe no modal
 function generateResults() {
-    const name = document.getElementById('name').value;
-    const resultModal = document.getElementById('result-modal');
-    const overlay = document.getElementById('overlay');
-    const userNameDisplay = document.getElementById('userName');
+    const name = document.getElementById('name').value.trim();
+    if (!name) {
+        alert("Por favor, insira seu nome completo.");
+        return;
+    }
 
-    // Atualiza o nome do usuário no modal
-    userNameDisplay.textContent = name;
-
-    // Prepara os dados do gráfico
     const ctx = document.getElementById('resultChart').getContext('2d');
     const chartData = {
         labels: topics.map(topic => topic.name),
@@ -96,12 +94,11 @@ function generateResults() {
         }]
     };
 
-    // Verifica se o gráfico já existe e o destrói antes de criar um novo
+    // Destroi o gráfico existente antes de criar um novo
     if (resultChart) {
         resultChart.destroy();
     }
 
-    // Renderiza o gráfico de radar
     resultChart = new Chart(ctx, {
         type: 'radar',
         data: chartData,
@@ -113,8 +110,8 @@ function generateResults() {
                     max: 10,
                     ticks: {
                         stepSize: 2,
-                        color: '#fff', // Cor dos valores na escala radial
-                        backdropColor: 'rgba(0, 0, 0, 0)' // Remove fundo dos ticks
+                        color: '#fff',
+                        backdropColor: 'rgba(0, 0, 0, 0)'
                     },
                     pointLabels: {
                         color: '#fff',
@@ -123,10 +120,10 @@ function generateResults() {
                         }
                     },
                     grid: {
-                        color: 'rgba(255, 255, 255, 0.2)' // Cor das linhas da grade
+                        color: 'rgba(255, 255, 255, 0.2)'
                     },
                     angleLines: {
-                        color: 'rgba(255, 255, 255, 0.2)' // Cor das linhas radiais
+                        color: 'rgba(255, 255, 255, 0.2)'
                     }
                 }
             },
@@ -138,9 +135,9 @@ function generateResults() {
         }
     });
 
-    // Mostra o modal
-    overlay.style.display = 'block';
-    resultModal.style.display = 'block';
+    // Mostra o modal com o gráfico
+    document.getElementById('overlay').style.display = 'block';
+    document.getElementById('result-modal').style.display = 'block';
 }
 
 // Fecha o modal
