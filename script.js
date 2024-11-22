@@ -11,7 +11,15 @@ document.addEventListener('DOMContentLoaded', () => {
         { name: "Sono", description: "Avalie sua qualidade de sono." },
         { name: "Endurance", description: "Avalie sua resistência física." },
         { name: "Treinamento Força", description: "Avalie sua força muscular." },
-        // Outros tópicos...
+        { name: "Forma física/peso", description: "Avalie seu peso e composição corporal." },
+        { name: "Etilismo/Tabagismo", description: "Avalie seu consumo de álcool/tabaco." },
+        { name: "Espiritualidade", description: "Avalie sua conexão espiritual." },
+        { name: "Ansiedade", description: "Avalie seu nível de ansiedade." },
+        { name: "Hidratação", description: "Avalie sua ingestão de água." },
+        { name: "Frutas/Verduras", description: "Avalie seu consumo de frutas e verduras." },
+        { name: "Industrializados/Gordura", description: "Avalie seu consumo de alimentos processados." },
+        { name: "Energia/Vitalidade", description: "Avalie sua energia diária." },
+        { name: "Tempo/Intensidade de treino", description: "Avalie sua rotina de treinos." }
     ];
 
     let currentQuestion = 0;
@@ -25,6 +33,16 @@ document.addEventListener('DOMContentLoaded', () => {
     nextButton.addEventListener('click', nextQuestion);
     prevButton.addEventListener('click', prevQuestion);
     resultButton.addEventListener('click', generateResults);
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            if (currentQuestion < topics.length - 1) {
+                nextQuestion();
+            } else if (currentQuestion === topics.length - 1) {
+                generateResults();
+            }
+        }
+    });
 
     function toggleExplanation() {
         document.getElementById('explanation').classList.toggle('hidden');
@@ -47,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
         questionContainer.innerHTML = `
             <h3>${topic.name}</h3>
             <p>${topic.description}</p>
-            <input type="number" min="1" max="10" placeholder="Nota de 1 a 10" 
+            <input type="number" min="1" max="10" placeholder="Nota de 1 a 10"
                 value="${scores[topic.name] || ''}" onchange="updateScore('${topic.name}', this.value)">
         `;
         prevButton.classList.toggle('hidden', currentQuestion === 0);
@@ -56,12 +74,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     window.updateScore = function (topic, value) {
-        const score = parseInt(value, 10);
-        if (isNaN(score) || score < 1 || score > 10) {
+        const parsedValue = parseInt(value, 10);
+        if (isNaN(parsedValue) || parsedValue < 1 || parsedValue > 10) {
             alert("Insira uma nota válida entre 1 e 10.");
             return;
         }
-        scores[topic] = score;
+        scores[topic] = parsedValue;
     };
 
     function nextQuestion() {
@@ -79,13 +97,30 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function generateResults() {
-        const data = topics.map(t => scores[t.name] || 0);
+        const chartData = topics.map(t => scores[t.name] || 0);
         const ctx = document.getElementById('resultChart').getContext('2d');
         if (radarChart) radarChart.destroy();
         radarChart = new Chart(ctx, {
             type: 'radar',
-            data: { labels: topics.map(t => t.name), datasets: [{ data, label: 'Resultados' }] },
+            data: {
+                labels: topics.map(t => t.name),
+                datasets: [{ data: chartData, label: 'Resultados', backgroundColor: 'rgba(255,215,0,0.5)', borderColor: '#FFD700' }]
+            },
+            options: { scales: { r: { beginAtZero: true, max: 10 } } }
         });
+
+        const improvementBars = document.getElementById('improvement-bars');
+        improvementBars.innerHTML = '';
+        topics.forEach((t, i) => {
+            const score = chartData[i];
+            const improvement = 100 - score * 10;
+            improvementBars.innerHTML += `
+                <div class="improvement-item">
+                    <p>${t.name}: ${improvement}%</p>
+                    <progress value="${improvement}" max="100"></progress>
+                </div>`;
+        });
+
         document.getElementById('overlay').classList.remove('hidden');
         document.getElementById('result-modal').classList.remove('hidden');
     }
@@ -96,6 +131,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function downloadPDF() {
-        alert("Por enquanto, o botão Imprimir só exibe esta mensagem.");
+        const pdf = new jsPDF();
+        pdf.text("Resultados do Círculo da Performance", 10, 10);
+        const canvas = document.getElementById('resultChart');
+        const imgData = canvas.toDataURL('image/png');
+        pdf.addImage(imgData, 'PNG', 10, 20, 180, 100);
+        pdf.save('Resultados.pdf');
     }
 });
