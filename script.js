@@ -73,7 +73,6 @@ function prevQuestion() {
     loadQuestion();
 }
 
-// Gera os resultados e exibe no modal
 function generateResults() {
     const name = document.getElementById('name').value.trim();
     if (!name) {
@@ -87,8 +86,8 @@ function generateResults() {
         datasets: [{
             label: 'Círculo da Performance',
             data: topics.map(topic => scores[topic.name] || 0),
-            backgroundColor: 'rgba(255, 215, 0, 0.2)',
-            borderColor: 'rgba(255, 215, 0, 1)',
+            backgroundColor: 'rgba(255, 215, 0, 0.4)', // Cor preenchida do radar
+            borderColor: 'rgba(255, 215, 0, 1)', // Cor da borda
             pointBackgroundColor: 'rgba(255, 215, 0, 1)',
             pointBorderColor: '#fff',
         }]
@@ -110,8 +109,8 @@ function generateResults() {
                     max: 10,
                     ticks: {
                         stepSize: 2,
-                        color: '#fff',
-                        backdropColor: 'rgba(0, 0, 0, 0)'
+                        color: '#fff', // Cor dos valores na escala radial
+                        backdropColor: 'rgba(0, 0, 0, 0)' // Remove fundo dos ticks
                     },
                     pointLabels: {
                         color: '#fff',
@@ -120,10 +119,10 @@ function generateResults() {
                         }
                     },
                     grid: {
-                        color: 'rgba(255, 255, 255, 0.2)'
+                        color: 'rgba(255, 255, 255, 0.2)' // Cor das linhas da grade
                     },
                     angleLines: {
-                        color: 'rgba(255, 255, 255, 0.2)'
+                        color: 'rgba(255, 255, 255, 0.2)' // Cor das linhas radiais
                     }
                 }
             },
@@ -139,6 +138,7 @@ function generateResults() {
     document.getElementById('overlay').style.display = 'block';
     document.getElementById('result-modal').style.display = 'block';
 }
+
 
 // Fecha o modal
 function closeModal() {
