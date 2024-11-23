@@ -224,37 +224,46 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Gera os resultados e o gráfico
     function generateResults() {
-        const chartData = topics.map(t => scores[t.name] || 0);
-        const ctx = document.getElementById('resultChart').getContext('2d');
-        if (radarChart) radarChart.destroy();
-        radarChart = new Chart(ctx, {
-            type: 'radar',
-            data: {
-                labels: topics.map(t => t.name),
-                datasets: [{ 
-                    data: chartData, 
-                    label: 'Resultados', 
-                    backgroundColor: 'rgba(255,215,0,0.5)', 
-                    borderColor: '#FFD700' 
-                }]
-            },
-            options: { scales: { r: { beginAtZero: true, max: 10 } } }
-        });
+    const chartData = topics.map(t => scores[t.name] || 0);
+    const ctx = document.getElementById('resultChart').getContext('2d');
 
-        const improvementBars = document.getElementById('improvement-bars');
-        improvementBars.innerHTML = '';
-        topics.forEach((t, i) => {
-            const score = chartData[i];
-            const improvement = 100 - score * 10;
-            improvementBars.innerHTML += `
-                <div class="improvement-item" style="display: flex; align-items: center; margin-bottom: 10px;">
-                    <span style="flex: 1;">${t.name}</span>
-                    <div style="flex: 3; display: flex; align-items: center;">
-                        <progress value="${improvement}" max="100" style="flex: 1; margin-right: 10px;"></progress>
-                        <span>${improvement}%</span>
-                    </div>
-                </div>`;
-        });
+    if (radarChart) radarChart.destroy();
+    radarChart = new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: topics.map(t => t.name),
+            datasets: [
+                {
+                    data: chartData,
+                    label: 'Resultados',
+                    backgroundColor: 'rgba(255,215,0,0.5)',
+                    borderColor: '#FFD700',
+                },
+            ],
+        },
+        options: {
+            scales: {
+                r: { beginAtZero: true, max: 10 },
+            },
+        },
+    });
+
+    const improvementBars = document.getElementById('improvement-bars');
+    improvementBars.innerHTML = `
+        <h3>Potencial de Melhora</h3>
+    `;
+    topics.forEach((t, i) => {
+        const score = chartData[i];
+        const improvement = 100 - score * 10;
+        improvementBars.innerHTML += `
+            <div class="improvement-item">
+                <p>${t.name}</p>
+                <progress value="${improvement}" max="100"></progress>
+                <span>${improvement}%</span>
+            </div>`;
+    });
+}
+
     }
 
     // Imprime os resultados
