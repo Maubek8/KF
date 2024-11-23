@@ -11,6 +11,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
 </head>
 <body>
+    <!-- Botão de Seleção de Idioma -->
+    <div class="language-selector">
+        <label for="language">Language:</label>
+        <select id="language" onchange="changeLanguage()">
+            <option value="pt">Português</option>
+            <option value="en">English</option>
+            <option value="es">Español</option>
+        </select>
+    </div>
+
     <!-- Cabeçalho -->
     <div class="header">
         <img src="image/alogomk.jpg" alt="Logo do Círculo da Performance" id="logo">
@@ -18,20 +28,19 @@
         <p class="powered-by">Powered by MK.</p>
         <p>ESCOLHA UM NÚMERO ENTRE 1 E 10</p>  
     </div>
- <div class="translation-buttons">
-    <button onclick="translatePage('en')">English</button> | 
-    <button onclick="translatePage('es')">Español</button>
-</div>
-
+ 
     <!-- Conteúdo Principal -->
     <main class="container">
         <!-- Seção de Login -->
         <section class="card" id="login-section">
             <button class="button secondary" id="info-button">O que é o Círculo da Performance?</button>
             <div id="explanation" class="hidden">
-
                 <h3>O que é o Círculo da Performance?</h3>
-                <p class="small-gray-text">O Círculo da Performance é uma ferramenta interativa que avalia 12 aspectos essenciais da saúde, bem-estar e desempenho por meio de notas de 1 a 10 em diferentes áreas, como sono, alimentação e treino. Identifica pontos de melhoria maximizar seu potencial.</p>
+                <p class="small-gray-text">
+                    O Círculo da Performance é uma ferramenta interativa que avalia 12 aspectos essenciais da saúde, 
+                    bem-estar e desempenho por meio de notas de 1 a 10 em diferentes áreas, como sono, alimentação e treino. 
+                    Identifica pontos de melhoria para maximizar seu potencial.
+                </p>
             </div>
             <div class="input-group">
                 <label for="name">Nome completo:</label>
@@ -70,5 +79,43 @@
 
     <!-- Scripts -->
     <script src="script.js"></script>
+    <script>
+        // Função para alterar o idioma usando a API de tradução
+        const apiKey = 'SUA_CHAVE_API_AQUI'; // Insira sua chave da Google Translation API
+
+        async function changeLanguage() {
+            const selectedLanguage = document.getElementById('language').value;
+            const contentElements = document.querySelectorAll('body *:not(script):not(style)');
+
+            const contentToTranslate = Array.from(contentElements).map(el => el.innerText || '').filter(text => text.trim() !== '');
+
+            try {
+                const response = await fetch(`https://translation.googleapis.com/language/translate/v2?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        q: contentToTranslate,
+                        target: selectedLanguage,
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (data && data.data && data.data.translations) {
+                    const translations = data.data.translations;
+
+                    contentElements.forEach((el, index) => {
+                        if (translations[index] && translations[index].translatedText) {
+                            el.innerText = translations[index].translatedText;
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Erro ao traduzir:', error);
+            }
+        }
+    </script>
 </body>
 </html>
