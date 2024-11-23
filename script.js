@@ -264,4 +264,20 @@ document.addEventListener('DOMContentLoaded', () => {
         pdf.save('Resultados.pdf');
     }
 });
-   
+   function printResults() {
+    const resultModal = document.getElementById('result-modal');
+    const originalContents = document.body.innerHTML; // Salva o conteúdo original da página
+    const modalContents = resultModal.innerHTML; // Obtém o conteúdo do modal
+
+    // Configura a visualização de impressão
+    document.body.innerHTML = modalContents;
+    window.print(); // Chama a impressão
+
+    // Restaura o conteúdo original após a impressão
+    document.body.innerHTML = originalContents;
+    document.location.reload(); // Recarrega a página para evitar problemas de estado
+}
+
+// Adicione o evento para o botão de impressão
+document.getElementById('print-page').addEventListener('click', printResults);
+
