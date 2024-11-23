@@ -135,3 +135,47 @@ body {
         width: 100%;
     }
 }
+@media print {
+    body {
+        background: white;
+        color: black;
+        font-family: Arial, sans-serif;
+    }
+
+    #result-modal {
+        position: static;
+        top: 0;
+        left: 0;
+        transform: none;
+        margin: 0;
+        padding: 20px;
+        width: 100%;
+        height: auto;
+        box-shadow: none;
+    }
+
+    #overlay, .header, #login-section, #question-section {
+        display: none;
+    }
+
+    #resultChart {
+        display: block;
+        margin: 20px auto;
+        max-width: 100%;
+    }
+
+    .improvement-bars {
+        margin: 20px 0;
+    }
+
+    .improvement-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+
+    progress {
+        flex: 1;
+        margin-right: 10px;
+    }
+}
