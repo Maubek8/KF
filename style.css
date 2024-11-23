@@ -121,3 +121,17 @@ body {
     margin-top: 8px; /* Espaçamento superior opcional */
     margin-bottom: 8px; /* Espaçamento inferior opcional */
 }
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    #result-modal, #result-modal * {
+        visibility: visible;
+    }
+    #result-modal {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+    }
+}
