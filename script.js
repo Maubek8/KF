@@ -60,41 +60,43 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function loadQuestion() {
-        const questionContainer = document.getElementById('question-container');
-        const topic = topics[currentQuestion];
-        questionContainer.innerHTML = `
-            <h3>${topic.name}</h3>
-            <p>${topic.description}</p>
-            <input type="number" min="1" max="10" placeholder="Nota de 1 a 10"
-                value="${scores[topic.name] || ''}" onchange="updateScore('${topic.name}', this.value)">
-        `;
-        prevButton.classList.toggle('hidden', currentQuestion === 0);
-        nextButton.classList.toggle('hidden', currentQuestion === topics.length - 1);
-        resultButton.classList.toggle('hidden', currentQuestion !== topics.length - 1);
+    const questionContainer = document.getElementById('question-container');
+    const topic = topics[currentQuestion];
+    questionContainer.innerHTML = `
+        <h3>${topic.name}</h3>
+        <p>${topic.description}</p>
+        <input type="number" id="question-input" min="1" max="10" placeholder="Insira um número de 1 a 10"
+            value="${scores[topic.name] || ''}">
+    `;
+    const questionInput = document.getElementById('question-input');
+    questionInput.focus(); // Garantir que o foco está no input
+    questionInput.addEventListener('change', () => updateScore(topic.name, questionInput.value));
+
+    // Atualizar visibilidade dos botões
+    prevButton.classList.toggle('hidden', currentQuestion === 0);
+    nextButton.classList.toggle('hidden', currentQuestion === topics.length - 1);
+    resultButton.classList.toggle('hidden', currentQuestion !== topics.length - 1);
+}
+
+function nextQuestion() {
+    if (currentQuestion < topics.length - 1) {
+        currentQuestion++;
+        loadQuestion();
     }
+}
 
-    window.updateScore = function (topic, value) {
-        const parsedValue = parseInt(value, 10);
-        if (isNaN(parsedValue) || parsedValue < 1 || parsedValue > 10) {
-            alert("Insira uma nota válida entre 1 e 10.");
-            return;
-        }
-        scores[topic] = parsedValue;
-    };
-
-    function nextQuestion() {
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+        const questionInput = document.getElementById('question-input');
         if (currentQuestion < topics.length - 1) {
-            currentQuestion++;
-            loadQuestion();
+            updateScore(topics[currentQuestion].name, questionInput.value);
+            nextQuestion();
+        } else if (currentQuestion === topics.length - 1) {
+            generateResults();
         }
+        questionInput.focus(); // Manter o cursor no campo de input
     }
-
-    function prevQuestion() {
-        if (currentQuestion > 0) {
-            currentQuestion--;
-            loadQuestion();
-        }
-    }
+});
 
     function generateResults() {
         const chartData = topics.map(t => scores[t.name] || 0);
