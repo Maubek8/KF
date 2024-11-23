@@ -116,9 +116,9 @@ body {
 }
 .small-gray-text {
     color: #666; /* Cinza médio */
-    font-size: 0.5em; /* Tamanho menor que o padrão */
-    line-height: 1.5; /* Espaçamento entre as linhas */
-    margin-top: 10px; /* Espaçamento superior opcional */
-    margin-bottom: 10px; /* Espaçamento inferior opcional */
+    font-size: 0.7em; /* Tamanho menor que o padrão */
+    line-height: 1.2; /* Espaçamento entre as linhas */
+    margin-top: 7px; /* Espaçamento superior opcional */
+    margin-bottom: 7px; /* Espaçamento inferior opcional */
 }
 
