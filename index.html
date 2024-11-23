@@ -18,7 +18,18 @@
         <p class="powered-by">Powered by MK.</p>
         <p>ESCOLHA UM NÚMERO ENTRE 1 E 10</p>  
     </div>
- 
+ <div class="translation-buttons">
+    <button onclick="translatePage('en')">English</button> | 
+    <button onclick="translatePage('es')">Español</button>
+</div>
+
+<script>
+    function translatePage(lang) {
+        const googleTranslateUrl = `https://translate.google.com/translate?sl=auto&tl=${lang}&u=${encodeURIComponent(window.location.href)}`;
+        window.open(googleTranslateUrl, '_blank'); // Abre em uma nova aba
+    }
+</script>
+
     <!-- Conteúdo Principal -->
     <main class="container">
         <!-- Seção de Login -->
