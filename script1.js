@@ -1,116 +1,259 @@
-console.log("Script carregado com sucesso");
+document.addEventListener('DOMContentLoaded', () => {
+    // Botões e elementos
+    const startButton = document.getElementById('start-button');
+    const infoButton = document.getElementById('info-button');
+    const closeButton = document.getElementById('close-modal');
+    const printButton = document.getElementById('print-page'); // Botão para imprimir
+    const nextButton = document.getElementById('next-button');
+    const prevButton = document.getElementById('prev-button');
+    const resultButton = document.getElementById('result-button');
 
-const topics = [
-    "Sono", "Endurance", "Treinamento Força", "Forma física/peso",
-    "Etilismo/Tabagismo", "Espiritualidade", "Ansiedade", "Hidratação",
-    "Frutas/Verduras", "Industrializados/Gordura", "Energia/Vitalidade", "Tempo/Intensidade de treino"
-];
-
-const scores = {};
-
-function loadQuestions() {
-    const questionDiv = document.getElementById('questions');
-    topics.forEach(topic => {
-        const question = document.createElement('div');
-        question.className = 'question';
-        question.innerHTML = `
-            <label>${topic}:</label>
-            <input type="number" min="1" max="10" value="5" onchange="updateScore('${topic}', this.value)">
-        `;
-        questionDiv.appendChild(question);
-        scores[topic] = 5;
-    });
-}
-
-function openForm() {
-    const name = document.getElementById('name').value;
-    if (!name.trim()) {
-        alert("Por favor, insira seu nome completo.");
-        return;
+  const topics = [
+    { 
+        name: "Sono", 
+        description: `
+            Avalie sua qualidade de sono com base na duração, consistência e sensação de descanso ao acordar.
+            <span class="examples">
+                                1 para: Noites mal dormidas, insônia ou menos de 4 horas de sono. <br>
+                10 para: Sono regular de 7 a 9 horas, acordando revigorado diariamente.
+            </span>
+        `
+    },
+    { 
+        name: "Endurance", 
+        description: `
+            Avalie sua resistência física durante atividades de longa duração.
+            <span class="examples">
+                1 para: Dificuldade extrema em manter atividades como caminhadas leves. <br>
+                10 para: Capacidade de correr ou realizar atividades intensas por longos períodos sem fadiga excessiva.
+            </span>
+        `
+    },
+    { 
+        name: "Treinamento Força", 
+        description: `
+            Avalie sua força muscular com base na capacidade de realizar exercícios como levantamento de peso ou movimentos intensos.
+            <span class="examples">
+                1 para: Não conseguir levantar ou mover objetos moderadamente pesados. <br>
+                10 para: Alta força muscular, levantando ou executando exercícios pesados com facilidade.
+            </span>
+        `
+    },
+    { 
+        name: "Forma física/peso", 
+        description: `
+            Avalie sua composição corporal e peso em relação ao seu objetivo.
+            <span class="examples">
+                1 para: Forma física significativamente longe do ideal, com desconforto constante. <br>
+                10 para: Peso e composição corporal alinhados com seus objetivos, sem desconforto.
+            </span>
+        `
+    },
+    { 
+        name: "Etilismo/Tabagismo", 
+        description: `
+            Avalie seu consumo de álcool e tabaco.
+            <span class="examples">
+                1 para: Consumo excessivo e regular, prejudicando a saúde. <br>
+                10 para: Ausência total de consumo ou ingestão muito moderada sem impacto na saúde.
+            </span>
+        `
+    },
+    { 
+        name: "Espiritualidade", 
+        description: `
+            Avalie sua conexão espiritual ou mental com algo maior.
+            <span class="examples">
+                1 para: Nenhuma prática ou sentimento de equilíbrio e propósito. <br>
+                10 para: Forte conexão espiritual ou prática que traz equilíbrio e paz.
+            </span>
+        `
+    },
+    { 
+        name: "Ansiedade", 
+        description: `
+            Avalie o nível de ansiedade no seu dia a dia.
+            <span class="examples">
+                1 para: Ansiedade intensa que interfere em todas as áreas da vida. <br>
+                10 para: Níveis muito baixos de ansiedade ou completa tranquilidade.
+            </span>
+        `
+    },
+    { 
+        name: "Hidratação", 
+        description: `
+            Avalie sua ingestão diária de água.
+            <span class="examples">
+                1 para: Consumo inferior a 500ml por dia. <br>
+                10 para: Ingestão de 2 litros ou mais por dia, ajustada à sua rotina.
+            </span>
+        `
+    },
+    { 
+        name: "Frutas/Verduras", 
+        description: `
+            Avalie a inclusão de frutas e verduras em sua dieta diária.
+            <span class="examples">
+                1 para: Consumo quase inexistente ou menos de 1 porção diária. <br>
+                10 para: Consumo diário de 5 porções ou mais, incluindo variedade.
+            </span>
+        `
+    },
+    { 
+        name: "Industrializados/Gordura", 
+        description: `
+            Avalie o consumo de alimentos ultraprocessados e gorduras ruins.
+            <span class="examples">
+                1 para: Alta dependência de fast food e snacks industrializados. <br>
+                10 para: Dieta composta majoritariamente por alimentos naturais e saudáveis.
+            </span>
+        `
+    },
+    { 
+        name: "Energia/Vitalidade", 
+        description: `
+            Avalie seu nível de energia ao longo do dia.
+            <span class="examples">
+                1 para: Sentir-se constantemente fatigado e sem disposição. <br>
+                10 para: Energia elevada e consistente ao longo do dia, sem episódios de fadiga.
+            </span>
+        `
+    },
+    { 
+        name: "Tempo/Intensidade de treino", 
+        description: `
+            Avalie sua rotina de treinos quanto à duração e intensidade.
+            <span class="examples">
+                1 para: Treinos inexistentes ou realizados de forma muito esporádica. <br>
+                10 para: Treinos regulares, equilibrados e alinhados com seus objetivos.
+            </span>
+        `
     }
-    document.getElementById('form-section').style.display = 'block';
-    document.getElementById('login-section').style.display = 'none';
-}
+];
+ let currentQuestion = 0;
+    const scores = {};
+    let radarChart;
 
-function updateScore(topic, value) {
-    scores[topic] = Number(value);
-}
+    // Eventos principais
+    startButton.addEventListener('click', startEvaluation);
+    infoButton.addEventListener('click', toggleExplanation);
+    closeButton.addEventListener('click', closeModal);
+    nextButton.addEventListener('click', nextQuestion);
+    prevButton.addEventListener('click', prevQuestion);
+    resultButton.addEventListener('click', openResultsModal);
+    printButton.addEventListener('click', printResults);
 
-function generateResults() {
-    const name = document.getElementById('name').value;
-    document.getElementById('userName').textContent = name;
-    createRadarChart();
-    document.getElementById('overlay').style.display = 'block';
-    document.getElementById('result-modal').style.display = 'block';
-}
-
-function createRadarChart() {
-    const ctx = document.getElementById('resultChart').getContext('2d');
-    const data = {
-        labels: topics,
-        datasets: [{
-            label: 'Círculo da Performance',
-            data: Object.values(scores),
-            fill: true,
-            backgroundColor: 'rgba(255, 215, 0, 0.2)',
-            borderColor: 'rgba(255, 215, 0, 1)',
-            pointBackgroundColor: 'rgba(255, 215, 0, 1)',
-            pointBorderColor: '#fff',
-            pointHoverBackgroundColor: '#fff',
-            pointHoverBorderColor: 'rgba(255, 215, 0, 1)'
-        }]
-    };
-    if (window.radarChart) window.radarChart.destroy();
-    window.radarChart = new Chart(ctx, {
-        type: 'radar',
-        data: data,
-        options: {
-            scales: {
-                r: {
-                    beginAtZero: true,
-                    min: 0,
-                    max: 10,
-                    ticks: {
-                        stepSize: 2
-                    }
-                }
-            },
-            plugins: {
-                legend: {
-                    display: false
-                }
-            }
+    // Inicia a avaliação
+    function startEvaluation() {
+        const name = document.getElementById('name').value.trim();
+        if (!name) {
+            alert("Por favor, insira seu nome completo.");
+            return;
         }
-    });
-}
+        document.getElementById('login-section').classList.add('hidden');
+        document.getElementById('question-section').classList.remove('hidden');
+        loadQuestion();
+    }
 
-function closeModal() {
-    document.getElementById('overlay').style.display = 'none';
-    document.getElementById('result-modal').style.display = 'none';
-}
+    // Alterna explicação
+    function toggleExplanation() {
+        document.getElementById('explanation').classList.toggle('hidden');
+    }
 
-function downloadPDF() {
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF();
-    const canvas = document.getElementById('resultChart');
-    const name = document.getElementById('userName').textContent;
-    
-    pdf.setFontSize(16);
-    pdf.text(`Círculo da Performance - ${name}`, 10, 20);
-    
-    const imgData = canvas.toDataURL('image/png');
-    pdf.addImage(imgData, 'PNG', 10, 30, 190, 190);
-    
-    pdf.setFontSize(12);
-    pdf.text('Análise do Gráfico:', 10, 230);
-    pdf.text('As áreas mais próximas do centro representam pontos a serem otimizados.', 10, 240);
-    pdf.text('Quanto mais fora do centro, melhor o desempenho no tópico específico.', 10, 250);
-    
-    pdf.save('circulo-da-performance.pdf');
-}
+    // Carrega a pergunta atual
+    function loadQuestion() {
+        const questionContainer = document.getElementById('question-container');
+        const topic = topics[currentQuestion];
 
-function shareChart() {
-    alert("Compartilhar gráfico em breve!");
-}
+        questionContainer.innerHTML = `
+            <h3>${topic.name}</h3>
+            <p>${topic.description}</p>
+            <input type="number" id="question-input" min="1" max="10" placeholder="Insira um número de 1 a 10"
+                value="${scores[topic.name] || ''}">
+        `;
 
-window.onload = loadQuestions;
+        const questionInput = document.getElementById('question-input');
+        questionInput.focus();
+        questionInput.addEventListener('change', () => updateScore(topic.name, questionInput.value));
+
+        prevButton.classList.toggle('hidden', currentQuestion === 0);
+        nextButton.classList.toggle('hidden', currentQuestion === topics.length - 1);
+        resultButton.classList.toggle('hidden', currentQuestion !== topics.length - 1);
+    }
+
+    // Atualiza o score da pergunta atual
+    function updateScore(topic, value) {
+        const parsedValue = parseInt(value, 10);
+        if (isNaN(parsedValue) || parsedValue < 1 || parsedValue > 10) {
+            alert("Por favor, insira um valor entre 1 e 10.");
+            return;
+        }
+        scores[topic] = parsedValue;
+    }
+
+    // Próxima pergunta
+    function nextQuestion() {
+        if (currentQuestion < topics.length - 1) {
+            currentQuestion++;
+            loadQuestion();
+        }
+    }
+
+    // Pergunta anterior
+    function prevQuestion() {
+        if (currentQuestion > 0) {
+            currentQuestion--;
+            loadQuestion();
+        }
+    }
+
+    // Abre o modal de resultados
+    function openResultsModal() {
+        generateResults();
+        document.getElementById('result-modal').classList.remove('hidden');
+        document.getElementById('overlay').classList.remove('hidden');
+    }
+
+    // Fecha o modal de resultados
+    function closeModal() {
+        document.getElementById('overlay').classList.add('hidden');
+        document.getElementById('result-modal').classList.add('hidden');
+    }
+
+    // Gera os resultados e o gráfico
+    function generateResults() {
+        const chartData = topics.map(t => scores[t.name] || 0);
+        const ctx = document.getElementById('resultChart').getContext('2d');
+        if (radarChart) radarChart.destroy();
+        radarChart = new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: topics.map(t => t.name),
+                datasets: [{ 
+                    data: chartData, 
+                    label: 'Resultados', 
+                    backgroundColor: 'rgba(255,215,0,0.5)', 
+                    borderColor: '#FFD700' 
+                }]
+            },
+            options: { scales: { r: { beginAtZero: true, max: 10 } } }
+        });
+
+        const improvementBars = document.getElementById('improvement-bars');
+        improvementBars.innerHTML = '';
+        topics.forEach((t, i) => {
+            const score = chartData[i];
+            const improvement = 100 - score * 10;
+            improvementBars.innerHTML += `
+                <div class="improvement-item">
+                    <p>${t.name}: ${improvement}%</p>
+                    <progress value="${improvement}" max="100"></progress>
+                </div>`;
+        });
+    }
+
+    // Imprime os resultados
+    function printResults() {
+        window.print(); // Abre a janela de visualização de impressão
+    }
+});
