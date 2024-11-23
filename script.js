@@ -82,6 +82,7 @@ function nextQuestion() {
     if (currentQuestion < topics.length - 1) {
         currentQuestion++;
         loadQuestion();
+        document.getElementById('question-input').focus(); // Mantém o cursor no campo de entrada
     }
 }
 
