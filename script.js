@@ -1,12 +1,19 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Botões e elementos
+    // Seleção de elementos
     const startButton = document.getElementById('start-button');
     const infoButton = document.getElementById('info-button');
     const closeButton = document.getElementById('close-modal');
-    const printButton = document.getElementById('print-page'); // Botão para imprimir
+    const printButton = document.getElementById('print-page');
     const nextButton = document.getElementById('next-button');
     const prevButton = document.getElementById('prev-button');
     const resultButton = document.getElementById('result-button');
+    const explanation = document.getElementById('explanation');
+    const questionSection = document.getElementById('question-section');
+    const loginSection = document.getElementById('login-section');
+    const questionContainer = document.getElementById('question-container');
+    const overlay = document.getElementById('overlay');
+    const resultModal = document.getElementById('result-modal');
+    const improvementBars = document.getElementById('improvement-bars');
 
     // Tópicos para a avaliação
     const topics = [
@@ -132,142 +139,133 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     ];
 
-    let currentQuestion = 0;
+     let currentQuestion = 0;
     const scores = {};
     let radarChart;
 
-    // Eventos principais
-    startButton.addEventListener('click', startEvaluation);
-    infoButton.addEventListener('click', toggleExplanation);
-    closeButton.addEventListener('click', closeModal);
-    nextButton.addEventListener('click', nextQuestion);
-    prevButton.addEventListener('click', prevQuestion);
-    resultButton.addEventListener('click', openResultsModal);
-    printButton.addEventListener('click', printResults);
-
-    // Função para iniciar a avaliação
-    function startEvaluation() {
-        const name = document.getElementById('name').value.trim();
-        if (!name) {
-            alert("Por favor, insira seu nome completo.");
+    // Função: Inicia a avaliação
+    startButton.addEventListener('click', () => {
+        const nameInput = document.getElementById('name').value.trim();
+        if (!nameInput) {
+            alert('Por favor, insira seu nome completo.');
             return;
         }
-        document.getElementById('login-section').classList.add('hidden');
-        document.getElementById('question-section').classList.remove('hidden');
+        loginSection.classList.add('hidden');
+        questionSection.classList.remove('hidden');
         loadQuestion();
-    }
+    });
 
-    // Alterna a explicação
-    function toggleExplanation() {
-        document.getElementById('explanation').classList.toggle('hidden');
-    }
+    // Função: Alterna a explicação
+    infoButton.addEventListener('click', () => {
+        explanation.classList.toggle('hidden');
+    });
 
-    // Carrega a pergunta atual
+    // Função: Carrega a pergunta atual
     function loadQuestion() {
-        const questionContainer = document.getElementById('question-container');
         const topic = topics[currentQuestion];
-
         questionContainer.innerHTML = `
             <h3>${topic.name}</h3>
             <p>${topic.description}</p>
             <input type="number" id="question-input" min="1" max="10" placeholder="Insira um número de 1 a 10"
                 value="${scores[topic.name] || ''}">
         `;
-
         const questionInput = document.getElementById('question-input');
         questionInput.focus();
-        questionInput.addEventListener('change', () => updateScore(topic.name, questionInput.value));
+        questionInput.addEventListener('change', () => {
+            scores[topic.name] = parseInt(questionInput.value, 10) || 0;
+        });
 
+        // Atualiza visibilidade dos botões
         prevButton.classList.toggle('hidden', currentQuestion === 0);
         nextButton.classList.toggle('hidden', currentQuestion === topics.length - 1);
         resultButton.classList.toggle('hidden', currentQuestion !== topics.length - 1);
     }
 
-    // Atualiza a pontuação da pergunta
-    function updateScore(topic, value) {
-        const parsedValue = parseInt(value, 10);
-        if (isNaN(parsedValue) || parsedValue < 1 || parsedValue > 10) {
-            alert("Por favor, insira um valor entre 1 e 10.");
-            return;
-        }
-        scores[topic] = parsedValue;
-    }
-
-    // Função para próxima pergunta
-    function nextQuestion() {
+    // Função: Próxima pergunta
+    nextButton.addEventListener('click', () => {
         if (currentQuestion < topics.length - 1) {
             currentQuestion++;
             loadQuestion();
         }
-    }
+    });
 
-    // Função para pergunta anterior
-    function prevQuestion() {
+    // Função: Pergunta anterior
+    prevButton.addEventListener('click', () => {
         if (currentQuestion > 0) {
             currentQuestion--;
             loadQuestion();
         }
-    }
+    });
 
-    // Abre o modal de resultados
-    function openResultsModal() {
+    // Função: Gera resultados
+    resultButton.addEventListener('click', () => {
         generateResults();
-        document.getElementById('result-modal').classList.remove('hidden');
-        document.getElementById('overlay').classList.remove('hidden');
-    }
+        resultModal.classList.remove('hidden');
+        overlay.classList.remove('hidden');
+    });
 
-    // Fecha o modal de resultados
-    function closeModal() {
-        document.getElementById('overlay').classList.add('hidden');
-        document.getElementById('result-modal').classList.add('hidden');
-    }
+    // Função: Fecha modal de resultados
+    closeButton.addEventListener('click', () => {
+        resultModal.classList.add('hidden');
+        overlay.classList.add('hidden');
+    });
 
-    // Gera os resultados e o gráfico
+    // Função: Gera os resultados e gráfico
     function generateResults() {
-    const chartData = topics.map(t => scores[t.name] || 0);
-    const ctx = document.getElementById('resultChart').getContext('2d');
+        const chartData = topics.map(t => scores[t.name] || 0);
+        const ctx = document.getElementById('resultChart').getContext('2d');
 
-    if (radarChart) radarChart.destroy();
-    radarChart = new Chart(ctx, {
-        type: 'radar',
-        data: {
-            labels: topics.map(t => t.name),
-            datasets: [
-                {
+        if (radarChart) radarChart.destroy();
+        radarChart = new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: topics.map(t => t.name),
+                datasets: [{
                     data: chartData,
                     label: 'Resultados',
                     backgroundColor: 'rgba(255,215,0,0.5)',
                     borderColor: '#FFD700',
-                },
-            ],
-        },
-        options: {
-            scales: {
-                r: { beginAtZero: true, max: 10 },
+                }],
             },
-        },
-    });
+            options: {
+                scales: {
+                    r: { beginAtZero: true, max: 10 },
+                },
+            },
+        });
 
-    const improvementBars = document.getElementById('improvement-bars');
-    improvementBars.innerHTML = `
-        <h3>Potencial de Melhora</h3>
-    `;
-    topics.forEach((t, i) => {
-        const score = chartData[i];
-        const improvement = 100 - score * 10;
-        improvementBars.innerHTML += `
-            <div class="improvement-item">
-                <p>${t.name}</p>
-                <progress value="${improvement}" max="100"></progress>
-                <span>${improvement}%</span>
-            </div>`;
-    });
-}
-
+        // Atualiza barras de potencial de melhora
+        improvementBars.innerHTML = `
+            <h3>Potencial de Melhora</h3>
+        `;
+        topics.forEach((t, i) => {
+            const score = chartData[i];
+            const improvement = 100 - score * 10;
+            improvementBars.innerHTML += `
+                <div class="improvement-item">
+                    <p>${t.name}</p>
+                    <progress value="${improvement}" max="100"></progress>
+                    <span>${improvement}%</span>
+                </div>`;
+        });
     }
 
-    // Imprime os resultados
-    function printResults() {
+    // Função: Imprime resultados
+    printButton.addEventListener('click', () => {
         window.print();
-    }
+    });
+
+    // Função: Alterna entre perguntas com Enter
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            const questionInput = document.getElementById('question-input');
+            if (questionInput && questionSection && !questionSection.classList.contains('hidden')) {
+                if (currentQuestion < topics.length - 1) {
+                    nextButton.click();
+                } else if (currentQuestion === topics.length - 1) {
+                    resultButton.click();
+                }
+            }
+        }
+    });
 });
