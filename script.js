@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const scores = {};
     let radarChart;
 
-    // Adicionar eventos principais
+    // Eventos principais
     startButton.addEventListener('click', startEvaluation);
     infoButton.addEventListener('click', toggleExplanation);
     closeButton.addEventListener('click', closeModal);
@@ -143,15 +143,10 @@ document.addEventListener('DOMContentLoaded', () => {
     prevButton.addEventListener('click', prevQuestion);
     resultButton.addEventListener('click', generateResults);
 
-    // Capturar Enter para iniciar ou navegar entre perguntas
+    // Capturar Enter
     document.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
-            const activeElement = document.activeElement;
-            if (activeElement === document.getElementById('name') && !document.getElementById('login-section').classList.contains('hidden')) {
-                startEvaluation();
-            } else if (!document.getElementById('question-section').classList.contains('hidden')) {
-                handleEnterKey();
-            }
+            handleEnterKey();
         }
     });
 
@@ -175,14 +170,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const topic = topics[currentQuestion];
 
         questionContainer.innerHTML = `
-            <h3>${topic.name}</h3>
-            <p>${topic.description}</p>
+            <h3 class="translatable">${topic.name}</h3>
+            <p class="translatable">${topic.description}</p>
             <input type="number" id="question-input" min="1" max="10" placeholder="Insira um número de 1 a 10"
                 value="${scores[topic.name] || ''}">
         `;
 
         const questionInput = document.getElementById('question-input');
-        questionInput.focus(); // Garantir foco no campo de entrada
+        questionInput.focus();
         questionInput.addEventListener('change', () => updateScore(topic.name, questionInput.value));
 
         // Atualizar visibilidade dos botões
@@ -202,13 +197,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function handleEnterKey() {
         const questionInput = document.getElementById('question-input');
-        if (currentQuestion < topics.length - 1) {
+        if (document.getElementById('login-section') && !document.getElementById('login-section').classList.contains('hidden')) {
+            startEvaluation();
+        } else if (currentQuestion < topics.length - 1) {
             updateScore(topics[currentQuestion].name, questionInput.value);
             nextQuestion();
         } else if (currentQuestion === topics.length - 1) {
             generateResults();
         }
-        questionInput.focus(); // Garantir que o cursor continue no campo de entrada
+        questionInput.focus();
     }
 
     function nextQuestion() {
