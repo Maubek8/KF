@@ -255,15 +255,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('result-modal').classList.add('hidden');
     }
 
-    function downloadPDF() {
-        const pdf = new jsPDF();
-        const canvas = document.getElementById('resultChart');
-        const imgData = radarChart.toBase64Image();
-        pdf.text("Resultados do Círculo da Performance", 10, 10);
-        pdf.addImage(imgData, 'PNG', 10, 20, 180, 100);
-        pdf.save('Resultados.pdf');
-    }
-});
   document.addEventListener('DOMContentLoaded', () => {
     const printButton = document.getElementById('print-page');
     const closeButton = document.getElementById('close-modal');
