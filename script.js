@@ -130,11 +130,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 ];
 
-    let currentQuestion = 0;
+  let currentQuestion = 0;
     const scores = {};
     let radarChart;
 
-    // Adiciona eventos principais
+    // Adicionar eventos principais
     startButton.addEventListener('click', startEvaluation);
     infoButton.addEventListener('click', toggleExplanation);
     closeButton.addEventListener('click', closeModal);
@@ -143,13 +143,13 @@ document.addEventListener('DOMContentLoaded', () => {
     prevButton.addEventListener('click', prevQuestion);
     resultButton.addEventListener('click', generateResults);
 
-    // Lógica para capturar o botão Enter
+    // Capturar Enter para iniciar ou navegar entre perguntas
     document.addEventListener('keydown', (event) => {
-        const activeElement = document.activeElement;
         if (event.key === 'Enter') {
+            const activeElement = document.activeElement;
             if (activeElement === document.getElementById('name') && !document.getElementById('login-section').classList.contains('hidden')) {
                 startEvaluation();
-            } else if (document.getElementById('question-section') && !document.getElementById('question-section').classList.contains('hidden')) {
+            } else if (!document.getElementById('question-section').classList.contains('hidden')) {
                 handleEnterKey();
             }
         }
@@ -170,40 +170,26 @@ document.addEventListener('DOMContentLoaded', () => {
         loadQuestion();
     }
 
-function loadQuestion() {
-    const questionContainer = document.getElementById('question-container');
-    const topic = topics[currentQuestion];
+    function loadQuestion() {
+        const questionContainer = document.getElementById('question-container');
+        const topic = topics[currentQuestion];
 
-    questionContainer.innerHTML = `
-        <h3>${topic.name}</h3>
-        <p>${topic.description}</p>
-        <input type="number" id="question-input" min="1" max="10" placeholder="Insira um número de 1 a 10"
-            value="${scores[topic.name] || ''}">
-    `;
+        questionContainer.innerHTML = `
+            <h3>${topic.name}</h3>
+            <p>${topic.description}</p>
+            <input type="number" id="question-input" min="1" max="10" placeholder="Insira um número de 1 a 10"
+                value="${scores[topic.name] || ''}">
+        `;
 
-    const questionInput = document.getElementById('question-input');
-    questionInput.focus(); // Garantir foco no campo de entrada
-    questionInput.addEventListener('change', () => updateScore(topic.name, questionInput.value));
+        const questionInput = document.getElementById('question-input');
+        questionInput.focus(); // Garantir foco no campo de entrada
+        questionInput.addEventListener('change', () => updateScore(topic.name, questionInput.value));
 
-    // Atualizar visibilidade dos botões
-    prevButton.classList.toggle('hidden', currentQuestion === 0);
-    nextButton.classList.toggle('hidden', currentQuestion === topics.length - 1);
-    resultButton.classList.toggle('hidden', currentQuestion !== topics.length - 1);
-
-    // Garantir que o cursor permanece no campo ao navegar entre perguntas
-    document.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter') {
-            if (currentQuestion < topics.length - 1) {
-                updateScore(topic.name, questionInput.value);
-                nextQuestion();
-            } else if (currentQuestion === topics.length - 1) {
-                generateResults();
-            }
-            questionInput.focus();
-        }
-    });
-}
-
+        // Atualizar visibilidade dos botões
+        prevButton.classList.toggle('hidden', currentQuestion === 0);
+        nextButton.classList.toggle('hidden', currentQuestion === topics.length - 1);
+        resultButton.classList.toggle('hidden', currentQuestion !== topics.length - 1);
+    }
 
     function updateScore(topic, value) {
         const parsedValue = parseInt(value, 10);
@@ -222,7 +208,7 @@ function loadQuestion() {
         } else if (currentQuestion === topics.length - 1) {
             generateResults();
         }
-        questionInput.focus(); // Garante que o cursor continue no input
+        questionInput.focus(); // Garantir que o cursor continue no campo de entrada
     }
 
     function nextQuestion() {
