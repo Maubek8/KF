@@ -1,8 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Botões e elementos
     const startButton = document.getElementById('start-button');
     const infoButton = document.getElementById('info-button');
     const closeButton = document.getElementById('close-modal');
-    const downloadButton = document.getElementById('download-pdf');
+    const printButton = document.getElementById('print-page'); // Botão para imprimir
     const nextButton = document.getElementById('next-button');
     const prevButton = document.getElementById('prev-button');
     const resultButton = document.getElementById('result-button');
@@ -137,22 +138,12 @@ document.addEventListener('DOMContentLoaded', () => {
     startButton.addEventListener('click', startEvaluation);
     infoButton.addEventListener('click', toggleExplanation);
     closeButton.addEventListener('click', closeModal);
-    downloadButton.addEventListener('click', downloadPDF);
     nextButton.addEventListener('click', nextQuestion);
     prevButton.addEventListener('click', prevQuestion);
-    resultButton.addEventListener('click', generateResults);
+    resultButton.addEventListener('click', openResultsModal);
+    printButton.addEventListener('click', printResults);
 
-    // Capturar Enter
-    document.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter') {
-            handleEnterKey();
-        }
-    });
-
-    function toggleExplanation() {
-        document.getElementById('explanation').classList.toggle('hidden');
-    }
-
+    // Inicia a avaliação
     function startEvaluation() {
         const name = document.getElementById('name').value.trim();
         if (!name) {
@@ -164,6 +155,12 @@ document.addEventListener('DOMContentLoaded', () => {
         loadQuestion();
     }
 
+    // Alterna explicação
+    function toggleExplanation() {
+        document.getElementById('explanation').classList.toggle('hidden');
+    }
+
+    // Carrega a pergunta atual
     function loadQuestion() {
         const questionContainer = document.getElementById('question-container');
         const topic = topics[currentQuestion];
@@ -179,12 +176,12 @@ document.addEventListener('DOMContentLoaded', () => {
         questionInput.focus();
         questionInput.addEventListener('change', () => updateScore(topic.name, questionInput.value));
 
-        // Atualizar visibilidade dos botões
         prevButton.classList.toggle('hidden', currentQuestion === 0);
         nextButton.classList.toggle('hidden', currentQuestion === topics.length - 1);
         resultButton.classList.toggle('hidden', currentQuestion !== topics.length - 1);
     }
 
+    // Atualiza o score da pergunta atual
     function updateScore(topic, value) {
         const parsedValue = parseInt(value, 10);
         if (isNaN(parsedValue) || parsedValue < 1 || parsedValue > 10) {
@@ -194,19 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
         scores[topic] = parsedValue;
     }
 
-    function handleEnterKey() {
-        const questionInput = document.getElementById('question-input');
-        if (document.getElementById('login-section') && !document.getElementById('login-section').classList.contains('hidden')) {
-            startEvaluation();
-        } else if (currentQuestion < topics.length - 1) {
-            updateScore(topics[currentQuestion].name, questionInput.value);
-            nextQuestion();
-        } else if (currentQuestion === topics.length - 1) {
-            generateResults();
-        }
-        questionInput.focus();
-    }
-
+    // Próxima pergunta
     function nextQuestion() {
         if (currentQuestion < topics.length - 1) {
             currentQuestion++;
@@ -214,6 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Pergunta anterior
     function prevQuestion() {
         if (currentQuestion > 0) {
             currentQuestion--;
@@ -221,6 +207,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Abre o modal de resultados
+    function openResultsModal() {
+        generateResults();
+        document.getElementById('result-modal').classList.remove('hidden');
+        document.getElementById('overlay').classList.remove('hidden');
+    }
+
+    // Fecha o modal de resultados
+    function closeModal() {
+        document.getElementById('overlay').classList.add('hidden');
+        document.getElementById('result-modal').classList.add('hidden');
+    }
+
+    // Gera os resultados e o gráfico
     function generateResults() {
         const chartData = topics.map(t => scores[t.name] || 0);
         const ctx = document.getElementById('resultChart').getContext('2d');
@@ -229,7 +229,12 @@ document.addEventListener('DOMContentLoaded', () => {
             type: 'radar',
             data: {
                 labels: topics.map(t => t.name),
-                datasets: [{ data: chartData, label: 'Resultados', backgroundColor: 'rgba(255,215,0,0.5)', borderColor: '#FFD700' }]
+                datasets: [{ 
+                    data: chartData, 
+                    label: 'Resultados', 
+                    backgroundColor: 'rgba(255,215,0,0.5)', 
+                    borderColor: '#FFD700' 
+                }]
             },
             options: { scales: { r: { beginAtZero: true, max: 10 } } }
         });
@@ -245,35 +250,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     <progress value="${improvement}" max="100"></progress>
                 </div>`;
         });
-
-        document.getElementById('overlay').classList.remove('hidden');
-        document.getElementById('result-modal').classList.remove('hidden');
     }
 
-    function closeModal() {
-        document.getElementById('overlay').classList.add('hidden');
-        document.getElementById('result-modal').classList.add('hidden');
+    // Imprime os resultados
+    function printResults() {
+        window.print(); // Abre a janela de visualização de impressão
     }
-
-  document.addEventListener('DOMContentLoaded', () => {
-    const printButton = document.getElementById('print-page');
-    const closeButton = document.getElementById('close-modal');
-    const resultButton = document.getElementById('result-button'); // Botão para abrir o modal
-
-    // Exibe o modal de resultados
-    resultButton.addEventListener('click', () => {
-        document.getElementById('result-modal').classList.remove('hidden');
-        document.getElementById('overlay').classList.remove('hidden');
-    });
-
-    // Fecha o modal
-    closeButton.addEventListener('click', () => {
-        document.getElementById('result-modal').classList.add('hidden');
-        document.getElementById('overlay').classList.add('hidden');
-    });
-
-    // Imprime o conteúdo do modal
-    printButton.addEventListener('click', () => {
-        window.print(); // Abre a janela de visualização prévia de impressão
-    });
 });
