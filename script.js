@@ -36,7 +36,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
+            const questionInput = document.getElementById('question-input');
             if (currentQuestion < topics.length - 1) {
+                updateScore(topics[currentQuestion].name, questionInput.value);
                 nextQuestion();
             } else if (currentQuestion === topics.length - 1) {
                 generateResults();
@@ -60,44 +62,38 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function loadQuestion() {
-    const questionContainer = document.getElementById('question-container');
-    const topic = topics[currentQuestion];
-    questionContainer.innerHTML = `
-        <h3>${topic.name}</h3>
-        <p>${topic.description}</p>
-        <input type="number" id="question-input" min="1" max="10" placeholder="Insira um número de 1 a 10"
-            value="${scores[topic.name] || ''}">
-    `;
-    const questionInput = document.getElementById('question-input');
-    questionInput.focus(); // Garantir que o foco está no input
-    questionInput.addEventListener('change', () => updateScore(topic.name, questionInput.value));
-
-    // Atualizar visibilidade dos botões
-    prevButton.classList.toggle('hidden', currentQuestion === 0);
-    nextButton.classList.toggle('hidden', currentQuestion === topics.length - 1);
-    resultButton.classList.toggle('hidden', currentQuestion !== topics.length - 1);
-}
-
-function nextQuestion() {
-    if (currentQuestion < topics.length - 1) {
-        currentQuestion++;
-        loadQuestion();
-        document.getElementById('question-input').focus(); // Mantém o cursor no campo de entrada
-    }
-}
-
-document.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter') {
+        const questionContainer = document.getElementById('question-container');
+        const topic = topics[currentQuestion];
+        questionContainer.innerHTML = `
+            <h3>${topic.name}</h3>
+            <p>${topic.description}</p>
+            <input type="number" id="question-input" min="1" max="10" placeholder="Insira um número de 1 a 10"
+                value="${scores[topic.name] || ''}">
+        `;
         const questionInput = document.getElementById('question-input');
-        if (currentQuestion < topics.length - 1) {
-            updateScore(topics[currentQuestion].name, questionInput.value);
-            nextQuestion();
-        } else if (currentQuestion === topics.length - 1) {
-            generateResults();
-        }
-        questionInput.focus(); // Manter o cursor no campo de input
+        questionInput.focus(); // Garantir que o foco está no input
+        questionInput.addEventListener('change', () => updateScore(topic.name, questionInput.value));
+
+        prevButton.classList.toggle('hidden', currentQuestion === 0);
+        nextButton.classList.toggle('hidden', currentQuestion === topics.length - 1);
+        resultButton.classList.toggle('hidden', currentQuestion !== topics.length - 1);
     }
-});
+
+    function updateScore(topic, value) {
+        const parsedValue = parseInt(value, 10);
+        if (isNaN(parsedValue) || parsedValue < 1 || parsedValue > 10) {
+            alert("Por favor, insira um valor entre 1 e 10.");
+            return;
+        }
+        scores[topic] = parsedValue;
+    }
+
+    function nextQuestion() {
+        if (currentQuestion < topics.length - 1) {
+            currentQuestion++;
+            loadQuestion();
+        }
+    }
 
     function generateResults() {
         const chartData = topics.map(t => scores[t.name] || 0);
@@ -135,9 +131,10 @@ document.addEventListener('keydown', (event) => {
 
     function downloadPDF() {
         const pdf = new jsPDF();
-        pdf.text("Resultados do Círculo da Performance", 10, 10);
         const canvas = document.getElementById('resultChart');
-        const imgData = radarChart.toBase64Image();        pdf.addImage(imgData, 'PNG', 10, 20, 180, 100);
+        const imgData = radarChart.toBase64Image();
+        pdf.text("Resultados do Círculo da Performance", 10, 10);
+        pdf.addImage(imgData, 'PNG', 10, 20, 180, 100);
         pdf.save('Resultados.pdf');
     }
 });
