@@ -107,3 +107,10 @@ body {
     background: rgba(0, 0, 0, 0.7);
     z-index: 999;
 }
+.examples {
+    display: block;
+    font-size: 0.85em; /* Reduz o tamanho da fonte */
+    color: #666; /* Tom cinza claro */
+    margin-top: 5px; /* Espaçamento entre a descrição e os exemplos */
+    line-height: 1.5; /* Melhor espaçamento entre linhas */
+}
