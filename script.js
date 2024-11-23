@@ -170,23 +170,40 @@ document.addEventListener('DOMContentLoaded', () => {
         loadQuestion();
     }
 
-    function loadQuestion() {
-        const questionContainer = document.getElementById('question-container');
-        const topic = topics[currentQuestion];
-        questionContainer.innerHTML = `
-            <h3>${topic.name}</h3>
-            <p>${topic.description}</p>
-            <input type="number" id="question-input" min="1" max="10" placeholder="Insira um número de 1 a 10"
-                value="${scores[topic.name] || ''}">
-        `;
-        const questionInput = document.getElementById('question-input');
-        questionInput.focus(); // Garantir foco no campo de entrada
-        questionInput.addEventListener('change', () => updateScore(topic.name, questionInput.value));
+function loadQuestion() {
+    const questionContainer = document.getElementById('question-container');
+    const topic = topics[currentQuestion];
 
-        prevButton.classList.toggle('hidden', currentQuestion === 0);
-        nextButton.classList.toggle('hidden', currentQuestion === topics.length - 1);
-        resultButton.classList.toggle('hidden', currentQuestion !== topics.length - 1);
-    }
+    questionContainer.innerHTML = `
+        <h3>${topic.name}</h3>
+        <p>${topic.description}</p>
+        <input type="number" id="question-input" min="1" max="10" placeholder="Insira um número de 1 a 10"
+            value="${scores[topic.name] || ''}">
+    `;
+
+    const questionInput = document.getElementById('question-input');
+    questionInput.focus(); // Garantir foco no campo de entrada
+    questionInput.addEventListener('change', () => updateScore(topic.name, questionInput.value));
+
+    // Atualizar visibilidade dos botões
+    prevButton.classList.toggle('hidden', currentQuestion === 0);
+    nextButton.classList.toggle('hidden', currentQuestion === topics.length - 1);
+    resultButton.classList.toggle('hidden', currentQuestion !== topics.length - 1);
+
+    // Garantir que o cursor permanece no campo ao navegar entre perguntas
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            if (currentQuestion < topics.length - 1) {
+                updateScore(topic.name, questionInput.value);
+                nextQuestion();
+            } else if (currentQuestion === topics.length - 1) {
+                generateResults();
+            }
+            questionInput.focus();
+        }
+    });
+}
+
 
     function updateScore(topic, value) {
         const parsedValue = parseInt(value, 10);
