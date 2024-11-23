@@ -264,20 +264,25 @@ document.addEventListener('DOMContentLoaded', () => {
         pdf.save('Resultados.pdf');
     }
 });
-   function printResults() {
-    const resultModal = document.getElementById('result-modal');
-    const originalContents = document.body.innerHTML; // Salva o conteúdo original da página
-    const modalContents = resultModal.innerHTML; // Obtém o conteúdo do modal
+  document.addEventListener('DOMContentLoaded', () => {
+    const printButton = document.getElementById('print-page');
+    const closeButton = document.getElementById('close-modal');
+    const resultButton = document.getElementById('result-button'); // Botão para abrir o modal
 
-    // Configura a visualização de impressão
-    document.body.innerHTML = modalContents;
-    window.print(); // Chama a impressão
+    // Exibe o modal de resultados
+    resultButton.addEventListener('click', () => {
+        document.getElementById('result-modal').classList.remove('hidden');
+        document.getElementById('overlay').classList.remove('hidden');
+    });
 
-    // Restaura o conteúdo original após a impressão
-    document.body.innerHTML = originalContents;
-    document.location.reload(); // Recarrega a página para evitar problemas de estado
-}
+    // Fecha o modal
+    closeButton.addEventListener('click', () => {
+        document.getElementById('result-modal').classList.add('hidden');
+        document.getElementById('overlay').classList.add('hidden');
+    });
 
-// Adicione o evento para o botão de impressão
-document.getElementById('print-page').addEventListener('click', printResults);
-
+    // Imprime o conteúdo do modal
+    printButton.addEventListener('click', () => {
+        window.print(); // Abre a janela de visualização prévia de impressão
+    });
+});
