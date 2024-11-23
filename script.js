@@ -129,8 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `
     }
 ];
-
-  let currentQuestion = 0;
+ let currentQuestion = 0;
     const scores = {};
     let radarChart;
 
@@ -170,8 +169,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const topic = topics[currentQuestion];
 
         questionContainer.innerHTML = `
-            <h3 class="translatable">${topic.name}</h3>
-            <p class="translatable">${topic.description}</p>
+            <h3>${topic.name}</h3>
+            <p>${topic.description}</p>
             <input type="number" id="question-input" min="1" max="10" placeholder="Insira um número de 1 a 10"
                 value="${scores[topic.name] || ''}">
         `;
@@ -265,3 +264,4 @@ document.addEventListener('DOMContentLoaded', () => {
         pdf.save('Resultados.pdf');
     }
 });
+   
