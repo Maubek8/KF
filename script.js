@@ -134,8 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const pdf = new jsPDF();
         pdf.text("Resultados do Círculo da Performance", 10, 10);
         const canvas = document.getElementById('resultChart');
-        const imgData = canvas.toDataURL('image/png');
-        pdf.addImage(imgData, 'PNG', 10, 20, 180, 100);
+        const imgData = radarChart.toBase64Image();        pdf.addImage(imgData, 'PNG', 10, 20, 180, 100);
         pdf.save('Resultados.pdf');
     }
 });
