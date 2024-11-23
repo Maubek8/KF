@@ -78,44 +78,8 @@
     </div>
 
     <!-- Scripts -->
-    <script src="script.js"></script>
-    <script>
-        // Função para alterar o idioma usando a API de tradução
-        const apiKey = 'SUA_CHAVE_API_AQUI'; // Insira sua chave da Google Translation API
+    <script src="translation.js"></script>
+<script src="script.js"></script>
 
-        async function changeLanguage() {
-            const selectedLanguage = document.getElementById('language').value;
-            const contentElements = document.querySelectorAll('body *:not(script):not(style)');
-
-            const contentToTranslate = Array.from(contentElements).map(el => el.innerText || '').filter(text => text.trim() !== '');
-
-            try {
-                const response = await fetch(`https://translation.googleapis.com/language/translate/v2?key=${apiKey}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        q: contentToTranslate,
-                        target: selectedLanguage,
-                    }),
-                });
-
-                const data = await response.json();
-
-                if (data && data.data && data.data.translations) {
-                    const translations = data.data.translations;
-
-                    contentElements.forEach((el, index) => {
-                        if (translations[index] && translations[index].translatedText) {
-                            el.innerText = translations[index].translatedText;
-                        }
-                    });
-                }
-            } catch (error) {
-                console.error('Erro ao traduzir:', error);
-            }
-        }
-    </script>
 </body>
 </html>
