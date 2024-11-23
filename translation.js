@@ -1,4 +1,4 @@
-const apiKey = 'SUA_CHAVE_API_AQUI'; // Substitua pela sua chave da Google Translation API
+const apiKey = 'AIzaSyAC1Be5oZMO9WO21qzuaGuKjl3FnVLzg3Y'; // Substitua pela sua chave da Google Translation API
 
 async function changeLanguage() {
     const selectedLanguage = document.getElementById('language').value; // Captura o idioma selecionado
