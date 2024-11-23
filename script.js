@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const scores = {};
     let radarChart;
 
+    // Adiciona eventos principais
     startButton.addEventListener('click', startEvaluation);
     infoButton.addEventListener('click', toggleExplanation);
     closeButton.addEventListener('click', closeModal);
@@ -34,14 +35,14 @@ document.addEventListener('DOMContentLoaded', () => {
     prevButton.addEventListener('click', prevQuestion);
     resultButton.addEventListener('click', generateResults);
 
+    // Lógica para capturar o botão Enter
     document.addEventListener('keydown', (event) => {
+        const activeElement = document.activeElement;
         if (event.key === 'Enter') {
-            const questionInput = document.getElementById('question-input');
-            if (currentQuestion < topics.length - 1) {
-                updateScore(topics[currentQuestion].name, questionInput.value);
-                nextQuestion();
-            } else if (currentQuestion === topics.length - 1) {
-                generateResults();
+            if (activeElement === document.getElementById('name') && !document.getElementById('login-section').classList.contains('hidden')) {
+                startEvaluation();
+            } else if (document.getElementById('question-section') && !document.getElementById('question-section').classList.contains('hidden')) {
+                handleEnterKey();
             }
         }
     });
@@ -71,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 value="${scores[topic.name] || ''}">
         `;
         const questionInput = document.getElementById('question-input');
-        questionInput.focus(); // Garantir que o foco está no input
+        questionInput.focus(); // Garantir foco no campo de entrada
         questionInput.addEventListener('change', () => updateScore(topic.name, questionInput.value));
 
         prevButton.classList.toggle('hidden', currentQuestion === 0);
@@ -88,9 +89,27 @@ document.addEventListener('DOMContentLoaded', () => {
         scores[topic] = parsedValue;
     }
 
+    function handleEnterKey() {
+        const questionInput = document.getElementById('question-input');
+        if (currentQuestion < topics.length - 1) {
+            updateScore(topics[currentQuestion].name, questionInput.value);
+            nextQuestion();
+        } else if (currentQuestion === topics.length - 1) {
+            generateResults();
+        }
+        questionInput.focus(); // Garante que o cursor continue no input
+    }
+
     function nextQuestion() {
         if (currentQuestion < topics.length - 1) {
             currentQuestion++;
+            loadQuestion();
+        }
+    }
+
+    function prevQuestion() {
+        if (currentQuestion > 0) {
+            currentQuestion--;
             loadQuestion();
         }
     }
