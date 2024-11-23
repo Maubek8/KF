@@ -13,8 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
         description: `
             Avalie sua qualidade de sono com base na duração, consistência e sensação de descanso ao acordar.
             <span class="examples">
-                ESCOLHA UM NÚMERO DE 1 A 10
-                1 para: Noites mal dormidas, insônia ou menos de 4 horas de sono. <br>
+                                1 para: Noites mal dormidas, insônia ou menos de 4 horas de sono. <br>
                 10 para: Sono regular de 7 a 9 horas, acordando revigorado diariamente.
             </span>
         `
