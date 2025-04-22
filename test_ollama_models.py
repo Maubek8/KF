@@ -1,3 +1,4 @@
+$codigo = @"
 from axis_modules.axis_model_dispatcher import perguntar_para_modelo
 
 modelos = [
@@ -18,3 +19,6 @@ for modelo in modelos:
         print(f" {modelo} respondeu:\n{resposta}")
     except Exception as e:
         print(f" Erro ao testar {modelo}: {e}")
+"@
+
+[System.IO.File]::WriteAllText("D:\TECH\AXISMF\backend\test_ollama_models.py", $codigo, [System.Text.Encoding]::UTF8)
